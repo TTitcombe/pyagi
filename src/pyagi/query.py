@@ -1,12 +1,13 @@
+from pyagi.types import Message
 import requests
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 
 
-def generate(text: str, model: str = "qwen2.5-coder:14b") -> str:
+def generate(messages: list[Message], model: str) -> str:
     payload = {
         "model": model,
-        "messages": [{"role": "user", "content": text}],
+        "messages": messages,
         # Ollama streams NDJSON by default, which r.json() can't parse.
         "stream": False,
     }
