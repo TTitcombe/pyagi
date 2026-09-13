@@ -1,3 +1,4 @@
+import os
 from typing import Union
 from pathlib import Path
 
@@ -29,8 +30,20 @@ def edit_file(filepath: str, content: str):
     return f"{filepath} edited."
 
 def read_file(filepath: str):
+    """
+    Read the content of the given filepath.
+    """
     p = Path(filepath)
     with p.open('r') as fp:
         out = fp.read()
 
     return out
+
+def list_files():
+    """
+    List files in the current working directory, and the cwd.
+    """
+    cwd = os.getcwd()
+    files = os.listdir()
+
+    return f"CWD: {cwd}; contains {files}"

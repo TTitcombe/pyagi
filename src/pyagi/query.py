@@ -1,3 +1,4 @@
+from pyagi.tools.files import list_files, edit_file, read_file
 from pyagi.types import Message
 import requests
 
@@ -8,6 +9,7 @@ def generate(messages: list[Message], model: str) -> str:
     payload = {
         "model": model,
         "messages": messages,
+        "tools": [list_files, edit_file, read_file],
         # Ollama streams NDJSON by default, which r.json() can't parse.
         "stream": False,
     }
