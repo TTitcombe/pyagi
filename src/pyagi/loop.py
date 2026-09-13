@@ -13,5 +13,6 @@ def agent_chat(model: str = "qwen2.5-coder:14b"):
         messages.append({ "role": "user", "content": user_msg })
 
         output = generate(messages, model)
-        messages.append({ "role": "assistant", "content": output })
-        print(output + "\n\n")
+        messages.append(output.message)
+
+        print(output.message.content + "\n\n")
