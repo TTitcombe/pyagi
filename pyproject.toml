@@ -1,7 +1,7 @@
 [project]
 name = "pyagi"
 version = "0.1.0"
-description = "Add your description here"
+description = "An AI agent build from scratch in pure, shitty Python."
 readme = "README.md"
 authors = [
   { name = "tom", email = "hi@tomtitcombe.com" }
