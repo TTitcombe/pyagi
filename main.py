@@ -8,10 +8,8 @@ def main(model: str) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-                        prog='PyAgi',
-                        description='the power of chatgpt, in the palm of my hand.')
-    parser.add_argument('--model', required=False, type=str, default='qwen2.5-coder:14b')
+    parser = argparse.ArgumentParser(prog="agent-from-scratch")
+    parser.add_argument('--model', required=False, type=str, default='deepseek-r1:14b')
     args = parser.parse_args()
 
     main(args.model)
