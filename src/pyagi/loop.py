@@ -16,10 +16,16 @@ def agent_chat(model: str):
         messages.append({ "role": "user", "content": user_msg })
 
         call_model = True
+        tool_iteration = 0
         while call_model:
             output, new_messages, call_model = model_iteration(model, messages)
             print(output + "\n\n")
-            messages.append(*new_messages)
+            messages.extend(new_messages)
+            tool_iteration += 1
+
+            # backstop to stop an infinite loop. To be removed when this is less buggy.
+            if tool_iteration > 5:
+                break
 
 
 def model_iteration(model: str, messages: list[Message]):
@@ -29,6 +35,8 @@ def model_iteration(model: str, messages: list[Message]):
 
     tool_use = process_tools(output)
     for tool in tool_use:
-        new_messages.append({ "role": "tool", "content": tool["output"] })
+        # user not "tool" - ollama / deepseek drops "tool" roles silently when constructing
+        # the prompt, so the model never sees the tool output
+        new_messages.append({ "role": "user", "content": f"{tool["tool_name"]} output: {tool["output"]}" })
 
-    output, new_messages, len(tool_use) > 0
+    return output, new_messages, len(tool_use) > 0

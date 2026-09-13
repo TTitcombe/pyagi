@@ -21,7 +21,7 @@ def tool_prompt() -> str:
     for tool in TOOLS:
         prompt += f"{tool.__name__}:\n{tool.__doc__}\n\n"
 
-    prompt += "\n\nInvoke a tool by outputting\n<tool>\n{'tool': <tool_name>, 'parameters': <dict of parameters>}\n</tool>"
+    prompt += '\n\nInvoke a tool by outputting\n<tool>\n{"tool": <tool_name>, "parameters": <dict of parameters>}\n</tool>'
     return prompt.strip()
 
 def process_tools(prompt: str) -> list[ToolUse]:

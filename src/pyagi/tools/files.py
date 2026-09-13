@@ -44,6 +44,6 @@ def list_files():
     List files in the current working directory, and the cwd.
     """
     cwd = os.getcwd()
-    files = os.listdir()
+    files = [f for f in os.listdir(cwd) if os.path.isfile(os.path.join(cwd, f))]
 
     return f"CWD: {cwd}; contains {files}"
