@@ -23,12 +23,16 @@ _n.b. the default model is `deepseek-r1:14b`, so make sure your machine can hand
 
 ## Roadmap
 
-- [ ] Basic file tool use. IN PROGRESS
-- [ ] Terminal utilities like usage and compaction
-- [ ] Web search
-- [ ] long-term planning capabilities
+- [x] Basic file tool use
+- [ ] Mock calendar and email tools
+- [ ] Evals benchmark on personal assistant tasks
+- [ ] Container environment with mock data
 - [ ] Episodic memory
+- [ ] Context management
+- [ ] Web search
+- [ ] long-term planning capabilities / reasoning
 - [ ] Logging / observability
+- [ ] permissions + safety layers
 
 Anything more complex,
 like computer use, skills, MCP support,

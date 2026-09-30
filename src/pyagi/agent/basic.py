@@ -1,3 +1,4 @@
+from pyagi.tools.manager import ToolManager
 import json
 from typing import Callable
 from pyagi.types import Message, Tool
@@ -5,11 +6,10 @@ from pyagi.models.base import BaseModel
 from abc import ABC, abstractmethod
 
 class BaseAgent(ABC):
-    def __init__(self, model: BaseModel, tools: list[tuple[Tool, Callable]], system: str | None = None):
+    def __init__(self, model: BaseModel, tool_manager: ToolManager, system: str | None = None):
         self.model = model
         self.messages: list[Message] = []
-        self.tools: list[Tool] = [tool[0] for tool in tools]
-        self.tool_fns: dict[str, Callable] = {tool[0]["tool_name"]: tool[1] for tool in tools}
+        self.tools = tool_manager
 
         self.system = system or "You are an agent helping with personal tasks."
         self.messages.append({"role": "system", "content": self.system})
@@ -48,23 +48,22 @@ class BasicLoopAgent(BaseAgent):
 
     def iteration(self):
         all_new_messages: list[Message] = []
-        new_message, tool_attempts = self.model.query(self.messages, self.tools)
+        new_message, tool_attempts = self.model.query(self.messages, self.tools.tools)
         all_new_messages.append({
             "role": "assistant",
             "content": new_message
         })
 
         for tool in tool_attempts:
-            tool_callable = self.tool_fns[tool["tool_name"]]
-            if tool_callable is not None:
-                try:
-                    tool_output = tool_callable(**tool["inputs"])
+            try:
+                did_invoke, tool_output = self.tools.invoke(tool["tool_name"], tool["inputs"])
+                if did_invoke:
                     tool_output_str = json.dumps(tool_output)
                     all_new_messages.append({
                         "role": "tool",
                         "content": tool_output_str
                     })
-                except:
-                    ...
+            except:
+                ...
 
         return new_message, all_new_messages, len(tool_attempts) > 0

@@ -1,3 +1,4 @@
+from pyagi.tools.manager import create_tools
 from pyagi.tools.files import TOOLSET_FILES
 from pyagi.agent.basic import BasicLoopAgent
 from pyagi.models.ollama import OllamaDirect
@@ -8,7 +9,8 @@ from pyagi import generate
 
 def main(model_name: str) -> None:
     model = OllamaDirect(model_name)
-    agent = BasicLoopAgent(model, TOOLSET_FILES)
+    tools = create_tools(file_io=True)
+    agent = BasicLoopAgent(model, tools)
     agent.run()
 
 
