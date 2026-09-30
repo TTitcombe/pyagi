@@ -1,5 +1,7 @@
+import filecmp
+from pyagi.types import Tool
 import os
-from typing import Union
+from typing import Union, Callable
 from pathlib import Path
 
 def edit_file(filepath: str, content: str):
@@ -47,3 +49,30 @@ def list_files():
     files = [f for f in os.listdir(cwd) if os.path.isfile(os.path.join(cwd, f))]
 
     return f"CWD: {cwd}; contains {files}"
+
+TOOLSET_FILES: list[tuple[Tool, Callable]] = [
+    (
+        {
+            "tool_name": "edit_file",
+            "description": "Edit part of a file by appending text to the end. Creates the file if it does not exist.",
+            "parameters": {"filepath": "str", "content": "str"}
+        },
+        edit_file,
+    ),
+    (
+        {
+            "tool_name": "read_file",
+            "description": "Read the content of the given filepath.",
+            "parameters": {"filepath": "str"}
+        },
+        read_file,
+    ),
+    (
+        {
+            "tool_name": "list_files",
+            "description": "List files in the current working directory, and the cwd itself.",
+            "parameters": {}
+        },
+        list_files,
+    )
+]

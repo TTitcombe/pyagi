@@ -1,10 +1,15 @@
+from pyagi.tools.files import TOOLSET_FILES
+from pyagi.agent.basic import BasicLoopAgent
+from pyagi.models.ollama import OllamaDirect
 from pyagi.loop import agent_chat
 import argparse
 from pyagi import generate
 
 
-def main(model: str) -> None:
-    agent_chat(model)
+def main(model_name: str) -> None:
+    model = OllamaDirect(model_name)
+    agent = BasicLoopAgent(model, TOOLSET_FILES)
+    agent.run()
 
 
 if __name__ == "__main__":
