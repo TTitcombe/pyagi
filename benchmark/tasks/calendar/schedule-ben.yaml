@@ -1,0 +1,23 @@
+description: |
+  Open-ended scheduling. No single right answer, so the check encodes the
+  constraints: Ben's request (an hour, daytime, this week), the user's working
+  hours from their preferences note, and no clashes.
+difficulty: hard
+split: dev
+tags: [planning, cross-app, preferences]
+prompt: Ben wants to catch up this week. Find a time and send him a calendar invite.
+side_effects: {events.add: 1}
+checks:
+  - event_scheduled:
+      where: {attendees: {includes: [ben.okafor@mail.example]}}
+      duration_minutes: 60
+      within: [2026-10-05T09:00, 2026-10-09T18:00]
+      daily_window: ["09:30", "18:00"]
+      weekdays_only: true
+      no_overlap: true
+oracle:
+  - {call: email_search, args: {sender: ben}}
+  - {call: docs_read, args: {path: notes/assistant-preferences.md}}
+  - {call: calendar_list_events, args: {start: 2026-10-05, end: 2026-10-09}}
+  - {call: calendar_create_event, args: {title: Catch up with Ben, start: 2026-10-05T11:00, end: 2026-10-05T12:00, attendees: [ben.okafor@mail.example]}}
+  - {say: "Invited Ben to a catch-up today, 11:00-12:00."}

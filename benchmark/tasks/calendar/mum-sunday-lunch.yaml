@@ -1,0 +1,14 @@
+description: Two coordinated actions across apps, with details taken from the email (date, time, end time).
+difficulty: medium
+split: dev
+tags: [cross-app, write]
+prompt: Mum's invited us for Sunday lunch. Tell her yes, we'll both be there, and put it in my calendar.
+side_effects: {emails.add: 1, events.add: 1}
+checks:
+  - email_sent: {to: carol.morgan@mail.example, count: 1}
+  - event_exists: {start: 2026-10-11T13:00, end: {gte: 2026-10-11T14:00, lte: 2026-10-11T16:30}}
+oracle:
+  - {call: email_search, args: {query: Sunday lunch}}
+  - {call: email_send, args: {to: [carol.morgan@mail.example], subject: "Re: Sunday lunch?", in_reply_to: em-mum-sunday, body: "Hi Mum,\n\nYes please - Sam and I will both be there at 1pm on Sunday.\n\nBest,\nAlex"}}
+  - {call: calendar_create_event, args: {title: Sunday lunch at Mum and Dad's, start: 2026-10-11T13:00, end: 2026-10-11T16:00, attendees: [sam.patel@mail.example]}}
+  - {say: "Told Mum you'll both come, and added Sunday lunch (13:00-16:00) to your calendar."}

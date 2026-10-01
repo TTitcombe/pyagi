@@ -1,0 +1,11 @@
+description: Answer a factual question from a document the agent must find.
+difficulty: easy
+split: test
+tags: [retrieval, single-app]
+prompt: What was our revenue growth in Q3?
+checks:
+  - response: {contains: "18%"}
+oracle:
+  - {call: docs_search, args: {query: Q3 revenue}}
+  - {call: docs_read, args: {path: work/q3-report.md}}
+  - {say: "Q3 revenue was £4.2m, up 18% on Q2."}

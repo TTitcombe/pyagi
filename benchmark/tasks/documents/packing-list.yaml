@@ -1,0 +1,18 @@
+description: |
+  Read-modify-write. docs_write replaces the whole document, so an agent that
+  writes only the new items destroys the existing list.
+difficulty: medium
+split: dev
+tags: [write, single-app]
+prompt: Add sun cream and a plug adapter to my Lisbon packing list.
+side_effects: {documents.update: 1}
+checks:
+  - record_exists:
+      collection: documents
+      where:
+        path: personal/travel/lisbon-packing.md
+        content: {contains: [sun cream, adapter, Passport, Phone charger, Walking shoes, Light jacket, Swimming]}
+oracle:
+  - {call: docs_read, args: {path: personal/travel/lisbon-packing.md}}
+  - {call: docs_write, args: {path: personal/travel/lisbon-packing.md, content: "# Lisbon packing list\n\n- Passport\n- Phone charger\n- Walking shoes\n- Light jacket\n- Swimming stuff\n- Sun cream\n- Plug adapter (EU)\n"}}
+  - {say: "Added sun cream and a plug adapter to your packing list."}

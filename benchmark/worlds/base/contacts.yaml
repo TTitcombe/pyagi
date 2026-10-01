@@ -1,0 +1,42 @@
+- id: c-sam
+  name: Sam Patel
+  email: sam.patel@mail.example
+  phone: "+44 7700 900456"
+  relationship: partner
+  notes: Lives with Alex.
+- id: c-jordan
+  name: Jordan Lee
+  email: jordan.lee@northwind.example
+  relationship: manager at Northwind
+- id: c-priya
+  name: Priya Shah
+  email: priya.shah@northwind.example
+  relationship: colleague at Northwind
+- id: c-chris-doyle
+  name: Chris Doyle
+  email: chris.doyle@northwind.example
+  relationship: colleague at Northwind
+  notes: Leads Project Atlas.
+- id: c-chris-wong
+  name: Chris Wong
+  email: chris.wong@mail.example
+  relationship: friend
+  notes: Climbing partner.
+- id: c-ben
+  name: Ben Okafor
+  email: ben.okafor@mail.example
+  relationship: friend
+  notes: Old university friend, works in publishing.
+- id: c-mum
+  name: Carol Morgan
+  email: carol.morgan@mail.example
+  relationship: mother
+- id: c-martin
+  name: Martin Hughes
+  email: martin.hughes@lettings.example
+  relationship: landlord
+- id: c-dental
+  name: Smile Dental Reception
+  email: reception@smiledental.example
+  phone: "+44 20 7946 0011"
+  relationship: dentist

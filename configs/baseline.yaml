@@ -1,0 +1,19 @@
+# The current agent: BasicLoopAgent + OllamaDirect with prompted (<tool> tag) tool calls.
+name: baseline
+description: BasicLoopAgent, prompted tool calling, no memory
+agent:
+  type: basic_loop
+  max_steps: 6          # model calls per user turn before handing back
+  system_prompt: You are an agent helping with personal tasks
+model:
+  name: deepseek-r1:14b
+  url: ${OLLAMA_URL:-http://localhost:11434}
+
+# Optional: grade llm_judge checks automatically (otherwise they wait for `bench review`).
+# judge:
+#   model: qwen3:14b
+#   url: ${OLLAMA_URL:-http://localhost:11434}
+
+# Required only for tasks with an LLM-simulated user.
+# user_simulator:
+#   model: qwen3:14b

@@ -1,0 +1,12 @@
+description: Update an existing event (resolving "tomorrow") rather than creating a duplicate.
+difficulty: easy
+split: dev
+tags: [single-app, update]
+prompt: Priya wants to push our lunch tomorrow to 1pm - can you move it in my calendar? No need to reply to her, I'll let her know.
+side_effects: {events.update: 1}
+checks:
+  - event_exists: {title: {contains: Priya}, start: 2026-10-06T13:00, end: 2026-10-06T14:00, count: 1}
+oracle:
+  - {call: calendar_list_events, args: {start: 2026-10-06, end: 2026-10-06}}
+  - {call: calendar_update_event, args: {event_id: ev-lunch-priya, start: 2026-10-06T13:00, end: 2026-10-06T14:00}}
+  - {say: "Moved lunch with Priya to 13:00-14:00 tomorrow."}

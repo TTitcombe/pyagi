@@ -1,0 +1,2 @@
+- {id: pm-visa-personal, label: Personal Visa, type: visa, last4: "4242", default: true}
+- {id: pm-amex-work, label: Northwind corporate Amex (work expenses only), type: amex, last4: "1005", default: false}

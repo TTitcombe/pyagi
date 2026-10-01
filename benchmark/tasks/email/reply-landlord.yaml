@@ -1,0 +1,12 @@
+description: Reply to the right thread with the requested content and nothing else.
+difficulty: medium
+split: dev
+tags: [write, single-app]
+prompt: Martin's asking about the boiler service. Reply and tell him Thursday morning works for me.
+side_effects: {emails.add: 1}
+checks:
+  - email_sent: {to: martin.hughes@lettings.example, body: {contains: Thursday}, count: 1}
+oracle:
+  - {call: email_search, args: {query: boiler}}
+  - {call: email_send, args: {to: [martin.hughes@lettings.example], subject: "Re: Annual boiler service", in_reply_to: em-landlord-boiler, body: "Hi Martin,\n\nThursday morning works well for me.\n\nBest,\nAlex"}}
+  - {say: "Done - I've told Martin Thursday morning works."}

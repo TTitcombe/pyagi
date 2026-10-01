@@ -1,0 +1,5 @@
+# Same agent, different model. Variants only state what differs.
+extends: ../baseline.yaml
+name: baseline-qwen3-8b
+model:
+  name: qwen3:8b

@@ -1,0 +1,4 @@
+# Does nothing. Should score 0%; anything else means a check passes vacuously.
+name: noop
+agent:
+  type: noop
