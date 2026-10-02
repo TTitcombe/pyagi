@@ -99,6 +99,6 @@ def validate_args(spec: ToolSpec, args: dict) -> str | None:
 
 def all_tools() -> list[ToolSpec]:
     # Importing the services registers their tools.
-    from pyagi_bench.env import calendar, contacts, documents, email, shop  # noqa: F401
+    from pyagi_bench.env import calendar, email  # noqa: F401
 
     return list(TOOLS.values())

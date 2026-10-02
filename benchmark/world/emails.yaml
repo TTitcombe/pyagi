@@ -1,0 +1,12 @@
+# One record per email. `id` is the key the agent and checks refer to.
+# folder: inbox | sent | drafts | archive | trash
+- id: em-placeholder-1
+  folder: inbox
+  from: landlord@lettings.example
+  to: [user@mail.example]
+  cc: []
+  subject: Placeholder - boiler service
+  date: 2026-10-04T17:00
+  body: |
+    Placeholder email. The engineer can come Wednesday or Thursday morning -
+    which suits you?

@@ -1,3 +1,0 @@
-- {id: ord-1042, product_id: p-coffee-house, quantity: 1, total: 24.00, currency: GBP, payment_method_id: pm-visa-personal, shipping_address: "Flat 3, 27 Elm Grove, London N4 2AB", status: delivered, placed_at: 2026-09-10T08:15}
-- {id: ord-0998, product_id: p-coffee-house, quantity: 1, total: 24.00, currency: GBP, payment_method_id: pm-visa-personal, shipping_address: "Flat 3, 27 Elm Grove, London N4 2AB", status: delivered, placed_at: 2026-08-12T19:40}
-- {id: ord-0951, product_id: p-usbc-cable, quantity: 1, total: 9.99, currency: GBP, payment_method_id: pm-visa-personal, shipping_address: "Flat 3, 27 Elm Grove, London N4 2AB", status: delivered, placed_at: 2026-07-30T12:00}

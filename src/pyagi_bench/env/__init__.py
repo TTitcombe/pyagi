@@ -1,7 +1,7 @@
 import traceback
 from typing import Any
 
-from pyagi_bench.env.tools import ToolError, ToolSpec, all_tools, validate_args
+from pyagi_bench.env.tools import ToolError, all_tools, validate_args
 from pyagi_bench.env.world import World
 
 
@@ -16,11 +16,11 @@ class Environment:
         env_bug                                    ours: fix the environment
     """
 
-    def __init__(self, data: dict, events: list[dict], tools: list[ToolSpec] | None = None):
+    def __init__(self, data: dict, events: list[dict]):
         self.world = World(data)
         self.initial = self.world.snapshot()
         self.events = events
-        self.tools = {t.name: t for t in (tools or all_tools())}
+        self.tools = {t.name: t for t in all_tools()}
 
     def call(self, name: str, args: dict | None) -> Any:
         # Local models often send explicit nulls for optional params; treat them as omitted.

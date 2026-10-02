@@ -1,12 +1,32 @@
-description: Reply to the right thread with the requested content and nothing else.
-difficulty: medium
-split: dev
-tags: [write, single-app]
-prompt: Martin's asking about the boiler service. Reply and tell him Thursday morning works for me.
+# Reference task: copy this to start a new one. The id is the file path
+# (email/reply-landlord) and the category is the folder.
+description: |
+  What this task tests and why (for you, not the agent). Here: reply to the
+  right person with the requested content, and change nothing else.
+split: dev                      # dev: iterate against it. test: held out for numbers you report.
+
+prompt: Reply to my landlord about the boiler service - Thursday morning works for me.
+
+# Scripted user replies, used in order each time the agent hands back (to ask
+# or confirm). Omit for single-turn tasks.
+# replies: ["Yes, go ahead."]
+
+# Extra or replacement world records for this task only (by id).
+# setup:
+#   emails:
+#     - {id: em-task-specific, folder: inbox, from: ..., to: [...], cc: [], subject: ..., date: ..., body: ...}
+
+# Changes the agent may make: <collection>.<add|update|delete>: n | any.
+# Anything not listed is collateral damage and fails the task.
 side_effects: {emails.add: 1}
+
 checks:
-  - email_sent: {to: martin.hughes@lettings.example, body: {contains: Thursday}, count: 1}
+  - email_sent: {to: landlord@lettings.example, body: {contains: Thursday}, count: 1}
+  # - human: {rubric: "Polite, concise, confirms Thursday morning."}   # stays pending
+
+# Reference solution, replayed by `bench validate` to prove the task is solvable.
+# `call` runs a tool; `say` ends the agent's turn with that message.
 oracle:
   - {call: email_search, args: {query: boiler}}
-  - {call: email_send, args: {to: [martin.hughes@lettings.example], subject: "Re: Annual boiler service", in_reply_to: em-landlord-boiler, body: "Hi Martin,\n\nThursday morning works well for me.\n\nBest,\nAlex"}}
-  - {say: "Done - I've told Martin Thursday morning works."}
+  - {call: email_send, args: {to: [landlord@lettings.example], subject: "Re: boiler service", in_reply_to: em-placeholder-1, body: "Thursday morning works for me."}}
+  - {say: "Replied to say Thursday morning works."}

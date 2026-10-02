@@ -23,12 +23,12 @@ _n.b. the default model is `deepseek-r1:14b`, so make sure your machine can hand
 
 ## Evals
 
-`benchmark/` holds a personal-assistant benchmark (a mock email, calendar, documents and shop world, plus tasks graded on the end state).
+`benchmark/` holds a minimal eval harness: a mock email and calendar world, and tasks graded on what the agent changed in it.
 See [benchmark/README.md](benchmark/README.md).
 
 ```bash
 uv run bench validate
-uv run bench run -c configs/baseline.yaml --split dev --trials 4
+uv run bench run -c configs/baseline.yaml --trials 4
 ```
 
 ## Roadmap
