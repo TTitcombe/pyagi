@@ -3,13 +3,13 @@ from pyagi.types import Tool
 from abc import abstractmethod, ABC
 
 class Toolset(ABC):
-    @abstractmethod
     @property
+    @abstractmethod
     def tools(self) -> list[Tool]:
         ...
 
-    @abstractmethod
     @property
+    @abstractmethod
     def tool_mapping(self) -> dict[str, Callable]:
         ...
 

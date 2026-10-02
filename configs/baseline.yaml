@@ -6,4 +6,4 @@ agent:
   max_steps: 6          # model calls per user turn before handing back
   system_prompt: You are an agent helping with personal tasks
 model:
-  name: deepseek-r1:14b
+  name: qwen3:14b
