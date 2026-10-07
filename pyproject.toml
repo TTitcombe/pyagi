@@ -9,25 +9,23 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "ollama>=0.6.2",
-    "pyyaml>=6",
     "requests>=2.34.2",
 ]
 
 [project.scripts]
 pyagi = "pyagi.main:main"
-bench = "pyagi_bench.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
-module-name = ["pyagi", "pyagi_bench"]
+module-name = ["pyagi", "pyagi_evals"]
 
 [tool.ty.environment]
 python = "./.venv"
 
 [dependency-groups]
 dev = [
-    "pytest>=8",
+    "harbor==0.24.0",
 ]

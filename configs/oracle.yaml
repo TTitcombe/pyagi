@@ -1,4 +1,0 @@
-# Replays each task's reference solution. Should score 100% (minus human-graded checks).
-name: oracle
-agent:
-  type: oracle

@@ -23,12 +23,10 @@ _n.b. the default model is `deepseek-r1:14b`, so make sure your machine can hand
 
 ## Evals
 
-`benchmark/` holds a minimal eval harness: a mock email and calendar world, and tasks graded on what the agent changed in it.
-See [benchmark/README.md](benchmark/README.md).
+Evals run on [Harbor](https://docs.harborframework.com); see [evals/README.md](evals/README.md).
 
 ```bash
-uv run bench validate
-uv run bench run -c configs/baseline.yaml --trials 4
+uv run harbor run -p evals/tasks -a pyagi_evals.harbor_agent:PyagiAgent -m qwen3:14b -n 1
 ```
 
 ## Roadmap

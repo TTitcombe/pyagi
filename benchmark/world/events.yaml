@@ -1,9 +1,0 @@
-# One record per calendar event. Times are local, YYYY-MM-DDTHH:MM.
-- id: ev-placeholder-1
-  title: Placeholder meeting
-  start: 2026-10-06T10:00
-  end: 2026-10-06T10:30
-  attendees: [colleague@work.example]
-  location: ""
-  description: ""
-  organizer: user@mail.example

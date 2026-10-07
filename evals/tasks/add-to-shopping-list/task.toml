@@ -1,0 +1,10 @@
+[task]
+name = "pyagi/add-to-shopping-list"
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+# Shared starting state (evals/base). The environment/ dir stays empty but must exist.
+docker_image = "pyagi-evals-base:local"
+network_mode = "no-network"

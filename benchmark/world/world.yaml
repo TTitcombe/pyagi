@@ -1,7 +1,0 @@
-# Who the agent acts for, and a frozen clock so relative dates ("tomorrow",
-# "this week") always resolve the same way. Times are local, no offsets.
-now: 2026-10-05T09:00   # a Monday
-timezone: Europe/London
-user:
-  name: Example User
-  email: user@mail.example
