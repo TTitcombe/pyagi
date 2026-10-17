@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 Mock email service. Sending only files the email in `sent`; nothing is delivered and nobody replies.
-Reading never changes state (no read/unread flags), so only real actions show up in a diff.
+Reading never changes state: `unread` is fixed by the seed, not cleared by `mail read`, so only real actions show up in a diff.
 
-  mail search [--query TEXT] [--folder F] [--from TEXT] [--limit N]   newest first; all folders except trash by default
+  mail search [--query TEXT] [--folder F] [--from TEXT] [--unread] [--limit N]   newest first; all folders except trash by default
   mail read ID
   mail send  --to EMAIL [--to ...] --subject S --body B [--cc EMAIL ...] [--reply-to ID]
   mail draft --to EMAIL [--to ...] --subject S --body B [--cc EMAIL ...] [--reply-to ID]
@@ -24,7 +24,7 @@ def find(emails: list[dict], email_id: str) -> dict:
 
 
 def summary(e: dict) -> dict:
-    return {k: e[k] for k in ("id", "folder", "from", "to", "subject", "date")} | {"snippet": e["body"][:100]}
+    return {k: e[k] for k in ("id", "folder", "from", "to", "subject", "date")} | {"unread": e.get("unread", False), "snippet": e["body"][:100]}
 
 
 def compose(emails: list[dict], args, folder: str) -> dict:
@@ -56,6 +56,7 @@ def main() -> None:
     p.add_argument("--query", default="")
     p.add_argument("--folder", choices=FOLDERS)
     p.add_argument("--from", dest="sender")
+    p.add_argument("--unread", action="store_true", help="only unread emails")
     p.add_argument("--limit", type=int, default=10)
     sub.add_parser("read").add_argument("id")
     for name in ("send", "draft"):
@@ -77,6 +78,7 @@ def main() -> None:
             e for e in emails
             if (e["folder"] == args.folder if args.folder else e["folder"] != "trash")
             and (args.sender is None or args.sender.lower() in e["from"].lower())
+            and (not args.unread or e.get("unread", False))
             and matches_words(args.query, e["from"], e["to"], e["cc"], e["subject"], e["body"])
         ]
         hits.sort(key=lambda e: e["date"], reverse=True)

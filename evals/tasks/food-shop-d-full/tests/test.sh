@@ -1,58 +1,79 @@
 #!/bin/bash
-# must be true:   /app/meal-plan.txt with dinners for Monday, Wednesday and Thursday (not Tuesday), all vegetarian
-#                  one order email to orders@sainsburys.example naming a valid slot (Tue 08-10, or Thu 08-10),
-#                  not including olive oil or salt
-#                  human check: uses leftovers and doesn't reorder what's in stock; Monday needs no delivery;
-#                  Thursday fits an anniversary
-# must not change: one email only; at most one calendar event (a delivery hold); no other changes
-#                  (only_changed({"mail.add": 1, "calendar.add": 1}))
+# must be true:   /app/meal-plan.txt with a dinner from the recipe site for Monday, Wednesday and Thursday, none on Tuesday
+#                  (investor dinner), none with meat (Sam is vegetarian)
+#                  Monday's dinner needs no delivery (the earliest free slot is Tuesday): Spanish omelette or spaghetti
+#                  Thursday's dinner fits the anniversary: the only vegetarian "special occasion" recipe is the risotto
+#                  one order email to orders@sainsburys.example naming a valid slot, with what the plan needs from the
+#                  shop, and not olive oil or salt (in stock)
+#                  valid slots: Tue 08-10; Thu 08-10 only if Wednesday's dinner also needs no delivery
+#                  (Mon 11-13 clashes with the workshop, Wed 19-21 with climbing)
+# human check:     the order uses the leftovers and doesn't reorder what's in stock (e.g. onions: 2 left)
+# must not change: one email only; at most one calendar event, a delivery hold in the chosen slot
 python3 - <<'PY' || echo 0 > /logs/verifier/reward.txt
 import re
 from datetime import datetime
 from check import *
 
-only_changed({"mail.add": 1, "calendar.add": 1})
-
-# list
-shopping_list = file_text("/app/shopping-list.txt").lower().replace("-", "").replace(" ", "")
-expect("Arborio rice on list", "arboriorice" in shopping_list)
-expect("Mushrooms on list", "mushrooms" in shopping_list)
-expect("hard cheese on list", "vegetarianhardcheese" in shopping_list)
-expect("Veg stock on list", "vegetablestock" in shopping_list or "vegstock" in shopping_list)
-expect("White wine on list", "whitewine" in shopping_list)
-expect("Long grain rice on list", "longgrainrice" in shopping_list)
-
-# Email to order
-emails = sent_emails()
-expect("Sent 1 email", len(emails) == 1)
-
-if len(emails) > 0:
-    email = emails[0]
-    expect("Sent to sainsbury's", email["to"] == orders@sainsburys.com)
-    expect("Subject about food order", re.compile("food|order|request|delivery|shop").search(email["subject"]))
+ORDERS = "orders@sainsburys.example"
+RECIPES = {  # recipe -> word that identifies it in free text
+    "spanish omelette": "omelette", "stuffed peppers": "stuffed pepper", "mushroom risotto": "risotto",
+    "chickpea curry": "chickpea", "spaghetti": "spaghetti", "jacket potatoes": "jacket", "steak": "steak",
+}
+IN_STOCK = {"spanish omelette", "spaghetti"}  # cookable from what's left (meal-log.txt): no delivery needed
+ORDER_NEEDS = {  # what each recipe needs from the shop: each tuple lists acceptable ways to name one item
+    "stuffed peppers": [("long grain",)],
+    "chickpea curry": [("chickpea",), ("coconut",), ("long grain",), ("curry",)],
+    "jacket potatoes": [("beans",)],
+    "mushroom risotto": [("arborio",), ("mushroom",), ("hard cheese",), ("stock",), ("wine",)],
+}
+SLOTS = {"Tue 08-10": ("2026-10-06T08:00", "2026-10-06T10:00"), "Thu 08-10": ("2026-10-08T08:00", "2026-10-08T10:00")}
 
 
-    # TODO: LLM as a judge for body politeness and relevance
+def dinners(plan: str) -> dict[str, list[str]]:
+    """Split the plan at each weekday name and list the recipes named after it, in order of mention."""
+    parts = re.split(r"\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b", plan.lower())
+    found: dict[str, list[str]] = {}
+    for day, text in zip(parts[1::2], parts[2::2]):
+        hits = sorted((text.find(word), name) for name, word in RECIPES.items() if word in text)
+        found.setdefault(day, []).extend(name for _, name in hits)
+    return found
 
-    expect("Email contains date")
-    expect("Date mentioned", mentions_date(email["body"], "2026-10-06"))
-    expect("Start time mentioned", mentions_time(email["body"], "08:00"))
-    expect("End time mentioned", mentions_time(email["body"], "10:00"))
 
-# calendar event
+# --- the meal plan
+plan = dinners(file_text("/app/meal-plan.txt"))
+dish = {day: (plan.get(day) or [None])[0] for day in ("monday", "wednesday", "thursday")}
+expect("plan has a recipe for Monday, Wednesday and Thursday", all(dish.values()), str(dish))
+expect("no dinner cooked on Tuesday (investor dinner)", not plan.get("tuesday"), str(plan.get("tuesday")))
+expect("all dinners vegetarian", "steak" not in dish.values(), str(dish))
+expect("Monday's dinner needs no delivery", dish["monday"] in IN_STOCK, str(dish["monday"]))
+expect("Thursday's dinner fits the anniversary", dish["thursday"] == "mushroom risotto", str(dish["thursday"]))
+
+# --- the order
+email_sent(to=ORDERS, count=1)
+orders = [m for m in sent_emails() if ORDERS in m["to"]]
+slot = None
+if orders:
+    email = orders[0]
+    expect("Subject about food order", bool(re.search("food|order|request|delivery|shop", email["subject"].lower())))
+    text = f"{email['subject']} {email['body']}".lower().replace("-", " ")
+
+    named = [s for s, (start, _) in SLOTS.items() if mentions_date(text, start) and mentions_time(text, start)]
+    expect("order names one valid slot", len(named) == 1, f"slots named: {named}")
+    slot = named[0] if len(named) == 1 else None
+    if slot == "Thu 08-10":
+        expect("Thursday delivery leaves Wednesday's dinner cookable", dish["wednesday"] in IN_STOCK, str(dish["wednesday"]))
+
+    for recipe in set(dish.values()) & set(ORDER_NEEDS):
+        missing = [names[0] for names in ORDER_NEEDS[recipe] if not any(n in text for n in names)]
+        expect(f"order covers {recipe}", not missing, f"missing: {missing}")
+    expect("order leaves out olive oil and salt", "olive oil" not in text and not re.search(r"\bsalt\b", text), "")
+
+# --- an optional delivery hold, in the chosen slot
 events = new_events()
+if events and slot:
+    start, end = SLOTS[slot]
+    event_exists(new_only=True, start=start, end=end, count=1)
 
-expect("One new event made", len(events) == 1)
-
-if len(events) > 0:
-    title = events[0]["title"].lower().replace(" ", "")
-    expect("Event for sainsburys delivery", "sainsbury" in title or "delivery" in title or "food" in title or "grocer" in title or "shop" in title)
-
-    start = datetime.fromisoformat(events[0]["start"])
-    end = datetime.fromisoformat(events[0]["end"])
-    expect("Starts the correct day", start.year == 2026 and start.month == 10 and start.day == 6)
-    expect("Ends on the correct day", end.year == 2026 and end.month == 10 and end.day == 6)
-    expect("Time within available hours", start.hour >= 8 and (end.hour <= 9 or (end.hour == 10 and end.minute == 0)))
-
+only_changed({"mail.add": 1, "calendar.add": 1})
 finish()
 PY

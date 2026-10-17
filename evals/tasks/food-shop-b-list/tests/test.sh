@@ -17,6 +17,7 @@ expect("hard cheese on list", "vegetarianhardcheese" in shopping_list)
 expect("Veg stock on list", "vegetablestock" in shopping_list or "vegstock" in shopping_list)
 expect("White wine on list", "whitewine" in shopping_list)
 expect("Long grain rice on list", "longgrainrice" in shopping_list)
+expect("Onions NOT on list", "onion" not in shopping_list)
 
 only_changed({})
 

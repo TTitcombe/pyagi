@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ct-sam",
+    "name": "Sam Patel",
+    "email": "sam.patel@mail.example",
+    "relationship": "partner",
+    "notes": "Lives with Alex. Vegetarian.",
+    "phone": "07700 900461"
+  }
+]
