@@ -1,0 +1,212 @@
+[
+  {
+    "id": "em-landlord-boiler",
+    "folder": "inbox",
+    "from": "martin.hughes@lettings.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Annual boiler service",
+    "body": "Hi Alex,\n\nThe gas engineer needs to do the annual boiler service at the flat this week.\nHe can come Wednesday or Thursday morning, any time between 9am and 12pm.\nCould you let me know which morning suits you?\n\nThanks,\nMartin Hughes\nHughes Lettings\n",
+    "date": "2026-10-04T17:12",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-dentist-reminder",
+    "folder": "inbox",
+    "from": "reception@smiledental.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Appointment reminder: Thursday 8 October",
+    "body": "Dear Alex Morgan,\n\nThis is a reminder of your check-up with Dr Helen Brooks on Thursday 8 October at 3:00pm\nat Smile Dental, 12 High St. Please arrive 5 minutes early.\n\nSmile Dental\n",
+    "date": "2026-10-03T10:00",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-priya-lunch",
+    "folder": "inbox",
+    "from": "priya.shah@northwind.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Re: Lunch tomorrow?",
+    "body": "Hey! Still on for lunch tomorrow? Something's come up at 12:30 - could we push it\nto 1pm instead? Same place, same length.\n\nP\n",
+    "date": "2026-10-05T08:41",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-jordan-q3",
+    "folder": "inbox",
+    "from": "jordan.lee@northwind.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Q3 report summary",
+    "body": "Hi Alex,\n\nCould you send me a short summary of the Q3 report (headline numbers and main risks)\nby Wednesday? I need it for the board pre-read.\n\nCheers,\nJordan\n",
+    "date": "2026-10-02T16:45",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-mum-sunday",
+    "folder": "inbox",
+    "from": "carol.morgan@mail.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Sunday lunch?",
+    "body": "Hello love,\n\nAre you and Sam free for Sunday lunch next weekend, the 11th? Dad's doing a roast.\nCome for 1pm, we usually finish around 4.\n\nLove, Mum x\n",
+    "date": "2026-10-04T19:30",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-invite-ben",
+    "folder": "inbox",
+    "from": "ben.okafor@mail.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Invitation: drinks Thursday 18:30",
+    "body": "Alex! Drinks at The Lamb on Thursday 8 October, 18:30-20:30, to celebrate the new job.\nLet me know if you can make it.\n\nBen\n",
+    "date": "2026-10-03T20:14",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-invite-atlas",
+    "folder": "inbox",
+    "from": "chris.doyle@northwind.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [
+      "jordan.lee@northwind.example"
+    ],
+    "subject": "Invitation: Atlas kickoff prep, Wed 11:00",
+    "body": "Hi Alex,\n\nInvitation: Atlas kickoff prep, Wednesday 7 October, 11:00-11:30, Room 2A.\nCan you join?\n\nChris\n",
+    "date": "2026-10-02T11:20",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-chris-climb",
+    "folder": "inbox",
+    "from": "chris.wong@mail.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "wednesday",
+    "body": "Still good for climbing Wednesday 6:30? I'll bring the rope.\n",
+    "date": "2026-10-03T21:05",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-sam-week",
+    "folder": "inbox",
+    "from": "sam.patel@mail.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "this week",
+    "body": "Busy week for me - work drinks on Tuesday and book club on Thursday, so I'm out\nthose evenings. Free otherwise! We should do a proper date night soon x\n",
+    "date": "2026-10-04T22:10",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-hr-expenses",
+    "folder": "inbox",
+    "from": "people@northwind.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Reminder: Q3 expenses due 15 October",
+    "body": "Hi all,\n\nPlease submit any outstanding Q3 expense claims by Thursday 15 October.\n\nNorthwind People Team\n",
+    "date": "2026-10-01T09:00",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-news-tech",
+    "folder": "inbox",
+    "from": "digest@techweekly.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Tech Weekly: 10 AI tools everyone is talking about",
+    "body": "This week: agents everywhere, a new open-weights model tops the charts, and why your\nsmart fridge wants a subscription.\n",
+    "date": "2026-10-05T06:00",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-news-recipes",
+    "folder": "inbox",
+    "from": "hello@weeknightrecipes.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "5 one-pot dinners for busy weeknights",
+    "body": "This week's recipes: chickpea curry, lemon orzo, miso aubergine and more.\n",
+    "date": "2026-10-04T07:00",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-bank-statement",
+    "folder": "inbox",
+    "from": "alerts@bank.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Your September statement is ready",
+    "body": "Your September statement for the account ending 4242 is now available in online banking.\n",
+    "date": "2026-10-02T05:30",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-sent-priya",
+    "folder": "sent",
+    "from": "alex.morgan@mail.example",
+    "to": [
+      "priya.shah@northwind.example"
+    ],
+    "cc": [],
+    "subject": "Lunch tomorrow?",
+    "body": "Lunch Tuesday 12:30 at Dishoom? My treat for covering the client call.\n",
+    "date": "2026-10-01T15:10",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-archived-delivery",
+    "folder": "archive",
+    "from": "orders@shop.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Delivered: coffee beans 1kg",
+    "body": "Your order has been delivered.\n",
+    "date": "2026-09-12T13:02",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-greenhouse-confirm",
+    "folder": "archive",
+    "from": "bookings@greenhousekitchen.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Your table on Friday 11 September",
+    "body": "Thanks Alex, your table for 2 at The Greenhouse Kitchen is confirmed for Friday 11 September at 19:00.\n",
+    "date": "2026-09-08T12:30",
+    "in_reply_to": null
+  }
+]

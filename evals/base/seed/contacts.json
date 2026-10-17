@@ -1,0 +1,11 @@
+[
+  {"id": "ct-sam", "name": "Sam Patel", "email": "sam.patel@mail.example", "relationship": "partner", "notes": "Lives with Alex. Vegetarian."},
+  {"id": "ct-jordan", "name": "Jordan Lee", "email": "jordan.lee@northwind.example", "relationship": "manager at Northwind", "notes": ""},
+  {"id": "ct-priya", "name": "Priya Shah", "email": "priya.shah@northwind.example", "relationship": "colleague at Northwind", "notes": ""},
+  {"id": "ct-chris-doyle", "name": "Chris Doyle", "email": "chris.doyle@northwind.example", "relationship": "colleague at Northwind", "notes": "Leads Project Atlas."},
+  {"id": "ct-chris-wong", "name": "Chris Wong", "email": "chris.wong@mail.example", "relationship": "friend", "notes": "Climbing partner."},
+  {"id": "ct-ben", "name": "Ben Okafor", "email": "ben.okafor@mail.example", "relationship": "friend", "notes": "Old university friend."},
+  {"id": "ct-mum", "name": "Carol Morgan", "email": "carol.morgan@mail.example", "relationship": "mother", "notes": ""},
+  {"id": "ct-martin", "name": "Martin Hughes", "email": "martin.hughes@lettings.example", "relationship": "landlord", "notes": "Hughes Lettings."},
+  {"id": "ct-dentist", "name": "Smile Dental", "email": "reception@smiledental.example", "relationship": "dentist", "notes": "Dr Helen Brooks."}
+]

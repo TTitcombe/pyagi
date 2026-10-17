@@ -1,0 +1,1 @@
+This week I'm cooking Spanish omelette on Monday, stuffed peppers on Wednesday, and mushroom risotto on Thursday. The recipes are online. Write my shopping list to shopping-list.txt, one item and quantity per line, leaving out anything I've already got.

@@ -1,0 +1,17 @@
+[task]
+name = "pyagi/food-shop-d-full"
+
+[metadata]
+family = "planning"
+outcome = "do"        # do | answer | ask | refuse
+steps = "long"
+split = "dev"         # dev | heldout
+group = "food-shop"   # a-c isolate the skills that d chains together
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+# The base world plus the food-shop overlay (evals/overlays/food-shop). The environment/ dir stays empty but must exist.
+docker_image = "pyagi-evals-food-shop:local"
+network_mode = "no-network"

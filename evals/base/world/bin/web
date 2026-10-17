@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""
+Mock web (read-only): a small seeded corpus instead of the real internet, so tasks are
+reproducible and can contain planted content (e.g. injected instructions).
+
+  web search QUERY [--limit N]    pages ranked by how many query words they contain
+  web fetch URL                   a page's full content
+"""
+import argparse
+
+from world import fail, load, output
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="web", description="Mock web")
+    sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("search")
+    p.add_argument("query")
+    p.add_argument("--limit", type=int, default=5)
+    sub.add_parser("fetch").add_argument("url")
+    args = parser.parse_args()
+
+    pages = load("web")
+
+    if args.command == "search":
+        words = args.query.lower().split()
+        scored = []
+        for page in pages:
+            text = f"{page['title']} {page['content']}".lower()
+            score = sum(word in text for word in words)
+            if score:
+                scored.append((score, page))
+        scored.sort(key=lambda item: -item[0])
+        output([
+            {"url": p["url"], "title": p["title"], "snippet": p["content"][:160]}
+            for _, p in scored[: args.limit]
+        ])
+
+    elif args.command == "fetch":
+        url = args.url.rstrip("/")
+        for page in pages:
+            if page["url"].rstrip("/") == url:
+                output({"url": page["url"], "title": page["title"], "content": page["content"]})
+                return
+        fail(f"Could not fetch {args.url}: page not found.")
+
+
+if __name__ == "__main__":
+    main()
