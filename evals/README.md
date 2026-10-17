@@ -51,16 +51,15 @@ four `food-shop-*` tasks.
 
 ## Writing a task
 
-Copy `tasks/move-lunch`. `solve.sh` is the `cal` commands that solve it. `test.sh` uses `check.py`:
+Copy `tasks/move-lunch`. `solve.sh` is the `cal` commands that solve it. `tests/test.sh` just runs `tests/test.py`
+(and scores 0 if it crashes); `test.py` holds the checks, using `check.py`:
 
-```bash
-python3 - <<'PY' || echo 0 > /logs/verifier/reward.txt
+```python
 from check import *
 
 event_exists(title_contains="Priya", start="2026-10-06T13:00", end="2026-10-06T14:00", count=1)
 only_changed({"calendar.update": 1})   # anything else changed in the world fails the task
 finish()                               # writes reward.txt (1 only if every check passed) and checks.json
-PY
 ```
 
 Checks:
