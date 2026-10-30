@@ -14,9 +14,9 @@ class Toolset(ABC):
         ...
 
     def invoke(self, tool_name: str, params: dict) -> tuple[bool, Any]:
-        internal_fn = self.tool_mapping[tool_name]
+        internal_fn = self.tool_mapping.get(tool_name)
 
         if internal_fn is None:
             return False, None
         else:
-            return True, internal_fn(*params)
+            return True, internal_fn(**params)
