@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from pyagi.tools.manager import create_tools
 from pyagi.tools.files import TOOLSET_FILES
 from pyagi.agent.basic import BasicLoopAgent
@@ -8,6 +9,7 @@ from pyagi import generate
 
 
 def main(model_name: str) -> None:
+    load_dotenv()
     model = OllamaDirect(model_name)
     tools = create_tools(file_io=True)
     agent = BasicLoopAgent(model, tools)

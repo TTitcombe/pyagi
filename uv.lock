@@ -1418,7 +1418,9 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "ollama" },
+    { name = "python-dotenv" },
     { name = "requests" },
+    { name = "tavily-python" },
 ]
 
 [package.dev-dependencies]
@@ -1429,7 +1431,9 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "ollama", specifier = ">=0.6.2" },
+    { name = "python-dotenv", specifier = ">=1.2.4" },
     { name = "requests", specifier = ">=2.34.2" },
+    { name = "tavily-python", specifier = ">=0.8.5" },
 ]
 
 [package.metadata.requires-dev]
@@ -1983,6 +1987,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/74/91/39da94fc6412a3e012ff6b4a3ae7ab008409869638b6b4a2b6d64beb6811/supabase_functions-2.32.0.tar.gz", hash = "sha256:78eb2f408894d25550d91736500dc0f6896ba3fc07ca63cd31c1173447dceaa0", size = 4978, upload-time = "2026-10-02T19:19:02.823Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/64/cf/3d9f6ceb52c6913040f90674579fe64d4fda2c0ae5aa32a1cc7faa30fb31/supabase_functions-2.32.0-py3-none-any.whl", hash = "sha256:d3ca04e3128f90d84a96a150bfd4e7407a9dec84a342f548cb538ee1e6300d88", size = 9241, upload-time = "2026-10-02T19:19:01.994Z" },
+]
+
+[[package]]
+name = "tavily-python"
+version = "0.8.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "requests" },
+    { name = "tiktoken" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2f/39/3aff85cb3b45cab3ef9578560364b893baa34e79744e99567a825dbadf57/tavily_python-0.8.5.tar.gz", hash = "sha256:1795965c3ffe5654856244d637daa816a4ee947aca57d0588b731c69e75e71fe", size = 35634, upload-time = "2026-10-06T15:11:34.827Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/c5/fc13567e2a1d3671f51252d44f580bf3ab3c0a6ec90a6553f5c67ba87208/tavily_python-0.8.5-py3-none-any.whl", hash = "sha256:f8d2880f5aa67cf3ee2eb1f7c9336ea50dc331eb1e406688391badb0140599a7", size = 24629, upload-time = "2026-10-06T15:11:33.854Z" },
 ]
 
 [[package]]

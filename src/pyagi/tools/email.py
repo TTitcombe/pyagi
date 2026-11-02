@@ -1,7 +1,8 @@
+from pyagi.types import Tool
 import random
 import json
 from datetime import datetime
-from typing import TypedDict
+from typing import TypedDict, Callable
 from pathlib import Path
 from pyagi.tools.base import Toolset
 
@@ -96,3 +97,31 @@ class MockEmail(Toolset):
         self.email_filepath.write_text(json.dumps(emails))
 
         return f"Email {id} sent to {', '.join(to)}"
+
+    @property
+    def tools(self) -> list[Tool]:
+        return [
+            {
+                "tool_name": "list_emails",
+                "description": "Return headline information for most recent matching N emails in a given time range and search query.",
+                "parameters": {"sender": "str | None, the email author to filter for", "search_string": "str | None, subject or content string to search for", "since_timestamp": "str | None, ISO format. Filters to emails sent after this datetime", "limit": "int, default 25"}
+            },
+            {
+                "tool_name": "read_email",
+                "description": "Return full information and content for an email with the given id. IDs can be found using list_emails.",
+                "parameters": {"email_id": "str"}
+            },
+            {
+                "tool_name": "send_email",
+                "description": "Send an email.",
+                "parameters": {"to": "list of str", "subject": "str", "body": "str"},
+            }
+        ]
+
+    @property
+    def tool_mapping(self) -> dict[str, Callable]:
+        return {
+            "list_emails": self.list_emails,
+            "read_email": self.read_email,
+            "send_email": self.send_email,
+        }
