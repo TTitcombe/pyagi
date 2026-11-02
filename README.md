@@ -32,12 +32,12 @@ uv run harbor run -p evals/tasks -a pyagi_evals.harbor_agent:PyagiAgent -m qwen3
 ## Roadmap
 
 - [x] Basic file tool use
-- [ ] Mock calendar and email tools
-- [ ] Evals benchmark on personal assistant tasks
-- [ ] Container environment with mock data
+- [x] Mock calendar and email tools
+- [x] Evals benchmark on personal assistant tasks
+- [x] Container environment with mock data
 - [ ] Episodic memory
 - [ ] Context management
-- [ ] Web search
+- [x] Web search
 - [ ] long-term planning capabilities / reasoning
 - [ ] Logging / observability
 - [ ] permissions + safety layers
