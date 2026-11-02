@@ -1,6 +1,9 @@
+from pyagi.tools.web_search import Websearch
+from pyagi.tools.calendar import MockCalendar
+from pyagi.tools.email import MockEmail
 from pyagi.tools.file_io import FileToolset
 from pyagi.tools.base import Toolset
-from typing import Callable, Any
+from typing import Callable, Any, TypedDict
 from pyagi.types import Tool
 
 class ToolManager:
@@ -26,10 +29,23 @@ class ToolManager:
 
         return False, None
 
+# TODO: generalise this for mock and genuine mailboxes
+class EventsConfig(TypedDict):
+    mailbox_location: str
+    calendar_location: str
+    user_email: str
 
-def create_tools(*, file_io: bool = False) -> ToolManager:
+
+def create_tools(*, file_io: bool = False, events: EventsConfig | None = None, websearch: bool = False) -> ToolManager:
     manager = ToolManager()
     if file_io:
         manager.register(FileToolset())
+
+    if events:
+        manager.register(MockEmail(events["mailbox_location"], events["user_email"]))
+        manager.register(MockCalendar(events["calendar_location"], events["user_email"], True))
+
+    if websearch:
+        manager.register(Websearch())
 
     return manager

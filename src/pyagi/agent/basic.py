@@ -29,7 +29,7 @@ class BasicLoopAgent(BaseAgent):
         self.should_stop: bool = False
 
     def handle_command(self, user_msg: str) -> None:
-        if user_msg.startswith("/"):
+        if not user_msg.startswith("/"):
             return
 
         if user_msg == "/exit":
@@ -87,7 +87,17 @@ class BasicLoopAgent(BaseAgent):
                         "role": "tool",
                         "content": tool_output_str
                     })
-            except:
-                ...
+                else:
+                    # This is a terrible error message: the agent has no information to improve on.
+                    # TODO: tools handle their own errors and return structured errors.
+                    all_new_messages.append({
+                        "role": "tool",
+                        "content": f"{tool['tool_name']} failed to invoke",
+                    })
+            except Exception as e:
+                all_new_messages.append({
+                    "role": "tool",
+                    "content": f"{tool['tool_name']} failed to run: {str(e)}"
+                })
 
         return new_message, all_new_messages, len(tool_attempts) > 0
