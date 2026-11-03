@@ -24,12 +24,11 @@ from datetime import datetime
 class CalendarEvent(TypedDict):
     id: str
     title: str
-    start: datetime
-    end: datetime
+    start: str
+    end: str
     attendees: list[str]
     location: str | None
     description: str | None
-
 
 class MockCalendar(Toolset):
     """
@@ -84,13 +83,10 @@ class MockCalendar(Toolset):
         if all_events is None:
             return [] # TODO: raise/log error here?
 
-        from_dt = self.to_datetime(from_datetime)
-        to_dt = self.to_datetime(to_datetime)
-
         for event in all_events:
-            if from_dt is not None and event["start"] < from_dt:
+            if from_datetime is not None and event["start"] < from_datetime:
                 continue
-            if to_dt is not None and event["start"] > to_dt:
+            if to_datetime is not None and event["start"] > to_datetime:
                 continue
 
             events.append(event)
@@ -108,8 +104,26 @@ class MockCalendar(Toolset):
 
         return None
 
-    def add_event(self, title: str, description: str, invitees: list[str], location: str | None, start_timestamp: str):
-        start_dt = datetime.fromisoformat(start_timestamp)
+    def delete_event(self, event_id: str):
+        events = self.process_events()
+        if events is None:
+            return f"No events to delete."
+
+        new_events = [event for event in events if event["id"] != event_id]
+        if len(new_events) == len(events):
+            self.calendar_file.write_text(json.dumps(new_events))
+            return f"Event {event_id} deleted."
+        else :
+            return f"Event {event_id} does not exist."
+
+
+    def add_event(self, title: str, description: str, invitees: list[str], location: str | None, start_datetime: str):
+        start_dt = datetime.fromisoformat(start_datetime)
+        dt_return = start_dt.isoformat()
+
+        if start_datetime != dt_return:
+            return f"Event could not be created - {start_datetime} invalid ISO datetime for meeting."
+
         invitees.append(self.user_email)
         id = self.id_generation(title)
 
@@ -118,8 +132,8 @@ class MockCalendar(Toolset):
             "description": description,
             "title": title,
             "location": location,
-            "start": start_dt,
-            "end": start_dt, # todo: add 30min default to end, or take optional length
+            "start": start_datetime,
+            "end": start_datetime, # todo: add 30min default to end, or take optional length
             "id": id,
         }
 
@@ -127,7 +141,23 @@ class MockCalendar(Toolset):
         existing_events.append(new_event)
 
         self.calendar_file.write_text(json.dumps(existing_events))
-        return f"Added event {id} at {start_dt}."
+        return f"Added event {id} at {start_datetime}."
+
+    def edit_event(self, event_id: str, invitees: list[str] | None, location: str | None, start_datetime: str | None) -> str:
+        event = self.get_event(event_id)
+        if event is None:
+            return f"Event {event_id} does not exist"
+
+        event["attendees"] = invitees or event["attendees"]
+        event["location"] = location or event["location"]
+        event["start"] = start_datetime or event["start"]
+
+        events = [event for event in (self.process_events() or []) if event["id"] != event_id ]
+        events.append(event)
+        events.sort(key=lambda x: x["start"])
+
+        self.calendar_file.write_text(json.dumps(events))
+        return f"Event {event_id} updated."
 
     # @staticmethod
     # def edit_event(event_id: str, *, from_datetime: str | None, to_datetime: str | None, description: str | None, location: str | None, invitees: list[str] | None):
@@ -149,7 +179,17 @@ class MockCalendar(Toolset):
             {
                 "tool_name": "add_event",
                 "description": "Create a new calendar event and invite attendees.",
-                "parameters": {"title": "str", "description": "str", "invitees": "list[str], excluding the user", "location": "str | None", "start_timestamp": "str, ISO format"}
+                "parameters": {"title": "str", "description": "str", "invitees": "list[str], excluding the user", "location": "str | None", "start_datetime": "str, ISO format"}
+            },
+            {
+                "tool_name": "delete_event",
+                "description": "Delete/cancel an existing calendar event.",
+                "parameters": {"event_id": "str"}
+            },
+            {
+                "tool_name": "edit_event",
+                "description": "Edit the location, start time, or attendees of an existing calendar event. Only provide data to replace.",
+                "parameters": {"invitees": "list[str] | None, excluding the user", "location": "str | None", "start_datetime": "str | None, ISO format"}
             },
         ]
 
@@ -159,4 +199,6 @@ class MockCalendar(Toolset):
             "list_events": self.list_events,
             "get_event": self.get_event,
             "add_event": self.add_event,
+            "delete_event": self.delete_event,
+            "edit_event": self.edit_event,
         }

@@ -6,8 +6,12 @@ from pathlib import Path
 from pyagi.tools.base import Toolset
 
 class FileToolset(Toolset):
-    @staticmethod
-    def edit_file(filepath: str, content: str):
+    def __init__(self, root: str | None = None):
+        super().__init__()
+
+        self.root = Path(root) if isinstance(root, str) else Path.cwd()
+
+    def edit_file(self, filepath: str, content: str):
         """
         Edit part of a file by appending text to the end (creates file if does not exist).
 
@@ -20,37 +24,28 @@ class FileToolset(Toolset):
 
         """
 
-        p = Path(filepath)
-        if not p.exists():
-            user_decision = input(f"Agent is trying to create file {filepath}. Proceed? (y/n)")
-        else:
-            user_decision = input(f"Agent is trying to edit {filepath}. Proceed? (y/n)")
-
-        if user_decision != "y":
-            return "Edit did not proceed: user permission gate."
+        p = self.root / filepath
 
         with p.open('a') as fp:
             fp.write(content)
 
         return f"{filepath} edited."
 
-    @staticmethod
-    def read_file(filepath: str):
+    def read_file(self, filepath: str):
         """
         Read the content of the given filepath.
         """
-        p = Path(filepath)
+        p = self.root / filepath
         with p.open('r') as fp:
             out = fp.read()
 
         return out
 
-    @staticmethod
-    def list_files():
+    def list_files(self):
         """
         List files in the current working directory, and the cwd.
         """
-        cwd = os.getcwd()
+        cwd = self.root.cwd()
         files = [f for f in os.listdir(cwd) if os.path.isfile(os.path.join(cwd, f))]
 
         return f"CWD: {cwd}; contains {files}"
@@ -61,16 +56,16 @@ class FileToolset(Toolset):
             {
                 "tool_name": "edit_file",
                 "description": "Edit part of a file by appending text to the end. Creates the file if it does not exist.",
-                "parameters": {"filepath": "str", "content": "str"}
+                "parameters": {"filepath": f"str, relative to root at {self.root}", "content": "str"}
             },
             {
                 "tool_name": "read_file",
                 "description": "Read the content of the given filepath.",
-                "parameters": {"filepath": "str"}
+                "parameters": {"filepath": f"str, relative to root at {self.root}"}
             },
             {
                 "tool_name": "list_files",
-                "description": "List files in the current working directory, and the cwd itself.",
+                "description": f"List files in root at {self.root}, and the cwd itself.",
                 "parameters": {}
             },
         ]

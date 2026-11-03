@@ -1,11 +1,8 @@
 from dotenv import load_dotenv
 from pyagi.tools.manager import create_tools
-from pyagi.tools.files import TOOLSET_FILES
 from pyagi.agent.basic import BasicLoopAgent
 from pyagi.models.ollama import OllamaDirect
-from pyagi.loop import agent_chat
 import argparse
-from pyagi import generate
 
 
 def main(model_name: str) -> None:

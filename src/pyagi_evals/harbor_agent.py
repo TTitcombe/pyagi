@@ -2,90 +2,38 @@
 Harbor adapter for BasicLoopAgent.
 
 Runs as a Harbor "external" agent: the agent loop runs here on the host (so it
-can reach Ollama on localhost), and its tools act on the task container through
-`environment.exec`.
+can reach Ollama on localhost). The agent uses the same toolsets as in real use:
+the task container's files and world state are copied to a temp dir on the host,
+the toolsets work on that copy, and it is copied back before the verifier runs.
 
     uv run harbor run -p evals/tasks -a pyagi_evals.harbor_agent:PyagiAgent -m qwen3:14b -n 1
 
-pyagi is synchronous and Harbor is async, so the agent runs in a worker thread
-and each tool call hops back onto Harbor's event loop to run its command.
+pyagi is synchronous and Harbor is async, so the agent runs in a worker thread.
 """
 import asyncio
-import base64
 import contextlib
 import json
 import os
-import shlex
-from typing import Callable
+import tempfile
+from pathlib import Path
 
 from harbor.agents.base import BaseAgent
-from harbor.environments.base import BaseEnvironment, ExecResult
+from harbor.environments.base import BaseEnvironment
 from harbor.models.agent.context import AgentContext
 
 from pyagi.agent.basic import BasicLoopAgent
 from pyagi.models.ollama import OllamaDirect
-from pyagi.tools.base import Toolset
+from pyagi.tools.calendar import MockCalendar
+from pyagi.tools.email import MockEmail
+from pyagi.tools.file_io import FileToolset
 from pyagi.tools.manager import ToolManager
 
 # Model calls per task before giving up (BasicLoopAgent's own backstop is 5).
 MAX_STEPS = 6
 
-Shell = Callable[[str], ExecResult]
-
-
-class ContainerFileToolset(Toolset):
-    """pyagi's file tools, operating inside the task container instead of on the host."""
-
-    def __init__(self, shell: Shell):
-        self.shell = shell
-
-    def edit_file(self, filepath: str, content: str) -> str:
-        # base64 so any content survives the shell untouched.
-        encoded = base64.b64encode(content.encode()).decode()
-        result = self.shell(f"printf %s {encoded} | base64 -d >> {shlex.quote(filepath)}")
-        return f"{filepath} edited." if result.return_code == 0 else f"Error: {result.stderr}"
-
-    def read_file(self, filepath: str) -> str:
-        result = self.shell(f"cat -- {shlex.quote(filepath)}")
-        return (result.stdout or "") if result.return_code == 0 else f"Error: {result.stderr}"
-
-    def list_files(self) -> str:
-        result = self.shell("echo \"CWD: $(pwd)\"; ls -p")
-        return result.stdout or ""
-
-    @property
-    def tools(self):
-        return [
-            {
-                "tool_name": "edit_file",
-                "description": "Edit part of a file by appending text to the end. Creates the file if it does not exist.",
-                "parameters": {"filepath": "str", "content": "str"},
-            },
-            {
-                "tool_name": "read_file",
-                "description": "Read the content of the given filepath.",
-                "parameters": {"filepath": "str"},
-            },
-            {
-                "tool_name": "list_files",
-                "description": "List files in the current working directory, and the cwd itself.",
-                "parameters": {},
-            },
-        ]
-
-    @property
-    def tool_mapping(self):
-        return {"edit_file": self.edit_file, "read_file": self.read_file, "list_files": self.list_files}
-
-    def invoke(self, tool_name: str, params: dict):
-        # Overrides Toolset.invoke, which passes params positionally and raises on unknown names.
-        fn = self.tool_mapping.get(tool_name)
-        if fn is None:
-            return False, None
-        try:
-            return True, fn(**params)
-        except TypeError as e:
-            return True, f"Error: bad parameters for {tool_name}: {e}"
+# Container dirs the tools work on (see evals/base/Dockerfile): the user's files, and the mock services' state.
+APP_DIR = "/app"
+WORLD_DIR = "/var/lib/world"
 
 
 def run_task(agent: BasicLoopAgent, instruction: str) -> str:
@@ -113,19 +61,38 @@ class PyagiAgent(BaseAgent):
         pass
 
     async def run(self, instruction: str, environment: BaseEnvironment, context: AgentContext) -> None:
-        loop = asyncio.get_running_loop()
-
-        def shell(command: str) -> ExecResult:
-            return asyncio.run_coroutine_threadsafe(environment.exec(command), loop).result()
-
-        tools = ToolManager()
-        tools.register(ContainerFileToolset(shell))
         if self._parsed_model_name is None:
             raise ValueError("pass an Ollama model with -m, e.g. -m qwen3:14b")
+
+        with tempfile.TemporaryDirectory(prefix="pyagi-") as tmp:
+            app_dir, world_dir = Path(tmp) / "app", Path(tmp) / "world"
+            await environment.download_dir(APP_DIR, app_dir)
+            await environment.download_dir(WORLD_DIR, world_dir)
+            try:
+                await self._run_agent(instruction, app_dir, world_dir, context)
+            finally:
+                # Checkers diff the container's state against the seed, so the agent's changes go back in.
+                await environment.upload_dir(app_dir, APP_DIR)
+                await environment.upload_dir(world_dir, WORLD_DIR)
+
+    async def _run_agent(self, instruction: str, app_dir: Path, world_dir: Path, context: AgentContext) -> None:
+        # The world's clock is frozen, so the agent needs to be told "now" to resolve "tomorrow" etc.
+        world = json.loads((world_dir / "world.json").read_text())
+        user = world["user"]
+
+        tools = ToolManager()
+        tools.register(FileToolset(str(app_dir)))
+        tools.register(MockCalendar(world_dir / "calendar.json", user["email"], False))
+        tools.register(MockEmail(world_dir / "mail.json", user["email"]))
+
+        system = (
+            "You are an agent helping with personal tasks.\n\n"
+            f"The current time is {world['now']} ({world['timezone']}). "
+            f"You are acting for {user['name']} ({user['email']})."
+        )
         # `-m qwen3:14b` and `-m ollama/qwen3:14b` both work.
-        model_name = self._parsed_model_name
         ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434")
-        agent = BasicLoopAgent(OllamaDirect(model_name, ollama_url=f"{ollama_url}/api/chat"), tools)
+        agent = BasicLoopAgent(OllamaDirect(self._parsed_model_name, ollama_url=f"{ollama_url}/api/chat"), tools, system)
 
         def run_logged() -> str:
             # OllamaDirect prints every request; keep that in the trial's log rather than Harbor's console.

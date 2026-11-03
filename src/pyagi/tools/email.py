@@ -6,15 +6,20 @@ from typing import TypedDict, Callable
 from pathlib import Path
 from pyagi.tools.base import Toolset
 
-class EmailHighlight(TypedDict):
-    id: str
-    sender: str
-    subject: str
-    sent_at: datetime
+# Functional syntax because "from" is a Python keyword. Field names match the world's mail.json.
+EmailHighlight = TypedDict("EmailHighlight", {
+    "id": str,
+    "from": str,
+    "subject": str,
+    "date": str,  # ISO format, e.g. "2026-10-04T17:12"
+})
 
 class Email(EmailHighlight):
+    folder: str
     to: list[str]
+    cc: list[str]
     body: str
+    in_reply_to: str | None
 
 
 class MockEmail(Toolset):
@@ -43,31 +48,29 @@ class MockEmail(Toolset):
         # TODO: validate that each item is a calendar event kind
         return as_json
 
-    def list_emails(self, sender: str | None, search_string: str | None, since_timestamp: str | None, limit: int = 25) -> list[EmailHighlight]:
+    def list_emails(self, sender: str | None, search_string: str | None, since_datetime: str | None, limit: int = 25) -> list[EmailHighlight]:
         limit = min(100, limit)
         emails = self.process_emails() or []
         inscope_emails: list[EmailHighlight] = []
 
-        since_dt = datetime.fromisoformat(since_timestamp) if since_timestamp is not None else None
-
         for email in emails:
-            if sender is not None and email["sender"] != sender:
+            if sender is not None and email["from"] != sender:
                 continue
 
-            if search_string is not None and (search_string.lower() not in email["subject"] or search_string.lower() not in email["body"]):
+            if search_string is not None and (search_string.lower() not in email["subject"] and search_string.lower() not in email["body"]):
                 continue
 
-            if since_dt is not None and email["sent_at"] < since_dt:
+            if since_datetime is not None and email["date"] < since_datetime:
                 continue
 
             inscope_emails.append({
                 "id": email["id"],
-                "sender": email["sender"],
-                "sent_at": email["sent_at"],
+                "from": email["from"],
+                "date": email["date"],
                 "subject": email["subject"]
             })
 
-            if len(emails) >= limit:
+            if len(inscope_emails) >= limit:
                 break
 
         return inscope_emails
@@ -87,11 +90,14 @@ class MockEmail(Toolset):
         id = str(random.random() * 10000).split(".")[0]
         new_email: Email = {
             "id": id,
-            "sender": self.user_email,
+            "from": self.user_email,
             "to": to,
             "subject": subject,
             "body": body,
-            "sent_at": datetime.now()
+            "date": datetime.now().isoformat(),
+            "cc": [],
+            "folder": "inbox",
+            "in_reply_to": None
         }
         emails.append(new_email)
         self.email_filepath.write_text(json.dumps(emails))
@@ -104,7 +110,7 @@ class MockEmail(Toolset):
             {
                 "tool_name": "list_emails",
                 "description": "Return headline information for most recent matching N emails in a given time range and search query.",
-                "parameters": {"sender": "str | None, the email author to filter for", "search_string": "str | None, subject or content string to search for", "since_timestamp": "str | None, ISO format. Filters to emails sent after this datetime", "limit": "int, default 25"}
+                "parameters": {"sender": "str | None, the email author to filter for", "search_string": "str | None, subject or content string to search for", "since_datetime": "str | None, ISO format. Filters to emails sent after this datetime", "limit": "int, default 25"}
             },
             {
                 "tool_name": "read_email",
