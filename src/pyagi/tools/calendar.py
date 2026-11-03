@@ -143,14 +143,15 @@ class MockCalendar(Toolset):
         self.calendar_file.write_text(json.dumps(existing_events))
         return f"Added event {id} at {start_datetime}."
 
-    def edit_event(self, event_id: str, invitees: list[str] | None, location: str | None, start_datetime: str | None) -> str:
+    def edit_event(self, event_id: str, invitees: list[str] | None = None, location: str | None = None, start_datetime: str | None = None) -> str:
         event = self.get_event(event_id)
         if event is None:
             return f"Event {event_id} does not exist"
 
-        event["attendees"] = invitees or event["attendees"]
+        event["attendees"] = invitees if invitees is not None else event["attendees"]
         event["location"] = location or event["location"]
         event["start"] = start_datetime or event["start"]
+        event["end"] = event["start"] # TODO: get the duration
 
         events = [event for event in (self.process_events() or []) if event["id"] != event_id ]
         events.append(event)
@@ -189,7 +190,7 @@ class MockCalendar(Toolset):
             {
                 "tool_name": "edit_event",
                 "description": "Edit the location, start time, or attendees of an existing calendar event. Only provide data to replace.",
-                "parameters": {"invitees": "list[str] | None, excluding the user", "location": "str | None", "start_datetime": "str | None, ISO format"}
+                "parameters": {"event_id": "str", "invitees": "list[str] | None, optional, excluding the user", "location": "str | None, optional", "start_datetime": "str | None, optional, ISO format"}
             },
         ]
 

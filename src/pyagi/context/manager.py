@@ -1,5 +1,5 @@
 from pyagi.models.base import BaseModel
-from pyagi.types import Message
+from pyagi.types import Message, Tool
 
 class ContextManager:
     def __init__(self, system: str | None):

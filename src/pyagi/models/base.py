@@ -7,5 +7,5 @@ class BaseModel(ABC):
         self.model = model
 
     @abstractmethod
-    def query(self, messages: List[Message], tools: List[Tool]) -> tuple[str, List[ToolAttempt]]:
+    def query(self, messages: List[Message], tools: List[Tool]) -> tuple[str, str, List[ToolAttempt]]:
         ...

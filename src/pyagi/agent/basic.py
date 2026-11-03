@@ -72,10 +72,11 @@ class BasicLoopAgent(BaseAgent):
 
     def iteration(self):
         all_new_messages: list[Message] = []
-        new_message, tool_attempts = self.model.query(self.context_manager.messages, self.tools.tools)
+        new_message, thinking, tool_attempts = self.model.query(self.context_manager.messages, self.tools.tools)
         all_new_messages.append({
             "role": "assistant",
-            "content": new_message
+            "content": new_message,
+            "thinking": thinking,
         })
 
         for tool in tool_attempts:

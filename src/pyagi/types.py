@@ -1,8 +1,9 @@
-from typing import TypedDict, Literal, Union, Any
+from typing import TypedDict, Literal, Union, Any, NotRequired
 
 class Message(TypedDict):
     role: Union[Literal["user"], Literal["system"], Literal["assistant"], Literal["tool"]]
     content: str
+    thinking: NotRequired[str]
 
 class Tool(TypedDict):
     tool_name: str

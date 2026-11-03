@@ -15,6 +15,7 @@ import contextlib
 import json
 import os
 import tempfile
+import threading
 from pathlib import Path
 
 from harbor.agents.base import BaseAgent
@@ -36,12 +37,14 @@ APP_DIR = "/app"
 WORLD_DIR = "/var/lib/world"
 
 
-def run_task(agent: BasicLoopAgent, instruction: str) -> str:
+def run_task(agent: BasicLoopAgent, instruction: str, stop: threading.Event) -> str:
     """BasicLoopAgent.run_iteration minus input(): one user turn, looping while the model calls tools."""
     context = agent.context_manager
     context.add({"role": "user", "content": instruction})
     output = ""
     for _ in range(MAX_STEPS):
+        if stop.is_set():
+            break
         output, new_messages, call_model = agent.iteration()
         context.add(new_messages)
         if not call_model:
@@ -94,16 +97,21 @@ class PyagiAgent(BaseAgent):
         ollama_url = os.environ.get("OLLAMA_URL", "http://localhost:11434")
         agent = BasicLoopAgent(OllamaDirect(self._parsed_model_name, ollama_url=f"{ollama_url}/api/chat"), tools, system)
 
+        stop = threading.Event()
+
         def run_logged() -> str:
             # OllamaDirect prints every request; keep that in the trial's log rather than Harbor's console.
             with (self.logs_dir / "agent.log").open("w") as log, contextlib.redirect_stdout(log):
-                return run_task(agent, instruction)
+                return run_task(agent, instruction, stop)
 
         try:
             response = await asyncio.to_thread(run_logged)
             # logs_dir is mounted at /logs/agent/ in the container, so verifiers can grade the final reply.
             (self.logs_dir / "response.txt").write_text(response)
         finally:
+            # On timeout Harbor cancels this coroutine, but the worker thread can't be cancelled. Stop it after
+            # its current model call so it doesn't keep competing with later trials for Ollama.
+            stop.set()
             messages = agent.context_manager.messages
             (self.logs_dir / "messages.json").write_text(json.dumps(messages, indent=2))
             context.metadata = {"messages": len(messages)}
