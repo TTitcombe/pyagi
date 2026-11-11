@@ -52,6 +52,32 @@ def run_task(agent: BasicLoopAgent, instruction: str, stop: threading.Event) -> 
     return output
 
 
+def read_records(world_dir: Path) -> dict[str, list[dict]]:
+    """Each service's records (calendar.json, mail.json, ...), skipping world.json, which isn't a list."""
+    services = {path.stem: json.loads(path.read_text()) for path in world_dir.glob("*.json")}
+    return {name: records for name, records in services.items() if isinstance(records, list)}
+
+
+def world_changes(before: dict[str, list[dict]], world_dir: Path) -> dict:
+    """What the agent changed in each service, by record id, with full records so a failed check can be read directly."""
+    changes = {}
+    for name, records in before.items():
+        try:
+            after = json.loads((world_dir / f"{name}.json").read_text())
+        except json.JSONDecodeError as e:
+            changes[name] = f"invalid JSON after the run: {e}"
+            continue
+        old, new = {r["id"]: r for r in records}, {r["id"]: r for r in after}
+        diff = {
+            "add": [new[i] for i in new.keys() - old.keys()],
+            "update": [{"before": old[i], "after": new[i]} for i in old.keys() & new.keys() if old[i] != new[i]],
+            "delete": [old[i] for i in old.keys() - new.keys()],
+        }
+        if any(diff.values()):
+            changes[name] = diff
+    return changes
+
+
 class PyagiAgent(BaseAgent):
     @staticmethod
     def name() -> str:
@@ -71,12 +97,15 @@ class PyagiAgent(BaseAgent):
             app_dir, world_dir = Path(tmp) / "app", Path(tmp) / "world"
             await environment.download_dir(APP_DIR, app_dir)
             await environment.download_dir(WORLD_DIR, world_dir)
+            before = read_records(world_dir)
             try:
                 await self._run_agent(instruction, app_dir, world_dir, context)
             finally:
                 # Checkers diff the container's state against the seed, so the agent's changes go back in.
                 await environment.upload_dir(app_dir, APP_DIR)
                 await environment.upload_dir(world_dir, WORLD_DIR)
+                changes = world_changes(before, world_dir)
+                (self.logs_dir / "world_changes.json").write_text(json.dumps(changes, indent=2))
 
     async def _run_agent(self, instruction: str, app_dir: Path, world_dir: Path, context: AgentContext) -> None:
         # The world's clock is frozen, so the agent needs to be told "now" to resolve "tomorrow" etc.
