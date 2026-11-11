@@ -76,7 +76,7 @@ class MockCalendar(Toolset):
         t = datetime.fromisoformat(dt)
         return t
 
-    def list_events(self, *, from_datetime: str | None, to_datetime: str | None, limit: int = 100) -> list[CalendarEvent]:
+    def list_events(self, *, from_datetime: str | None = None, to_datetime: str | None = None, limit: int = 100) -> list[CalendarEvent]:
         all_events = self.process_events()
         events: list[CalendarEvent] = []
 
@@ -150,8 +150,10 @@ class MockCalendar(Toolset):
 
         event["attendees"] = invitees if invitees is not None else event["attendees"]
         event["location"] = location or event["location"]
-        event["start"] = start_datetime or event["start"]
-        event["end"] = event["start"] # TODO: get the duration
+        if start_datetime is not None:
+            duration = datetime.fromisoformat(event["end"]) - datetime.fromisoformat(event["start"])
+            event["start"] = start_datetime
+            event["end"] = (datetime.fromisoformat(start_datetime) + duration).isoformat(timespec="minutes")
 
         events = [event for event in (self.process_events() or []) if event["id"] != event_id ]
         events.append(event)
