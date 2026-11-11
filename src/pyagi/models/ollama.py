@@ -27,10 +27,11 @@ class OllamaChatModel(BaseModel):
         )
 
 class OllamaDirect(BaseModel):
-    def __init__(self, model: str, ollama_url: str = OLLAMA_URL):
+    def __init__(self, model: str, ollama_url: str = OLLAMA_URL, thinking: bool = False):
         super().__init__(model)
         self.ollama_url = ollama_url
         self.tool_use_regex = rf'<tool>(.+?)</tool>'
+        self.thinking = thinking
 
     def process_message(self, message: str) -> str:
         return re.sub(self.tool_use_regex, "", message).strip()
@@ -41,11 +42,11 @@ class OllamaDirect(BaseModel):
 
         for maybe_tool in tool_regex:
             try:
-                print(f"Got json regex: {maybe_tool}")
+                #print(f"Got json regex: {maybe_tool}")
                 tool_json = json.loads(maybe_tool)
                 tool_name = tool_json["tool"]
                 tool_params = tool_json["parameters"] if "parameters" in tool_json else {}
-                print(f"Got tool: {tool_name} | {tool_params}")
+                #print(f"Got tool: {tool_name} | {tool_params}")
                 tools.append({ "tool_name": tool_name, "inputs": tool_params })
             except Exception as e:
                 print(f"Error parsing tool: {e}")
@@ -79,15 +80,15 @@ class OllamaDirect(BaseModel):
     def query(self, messages: List[Message], tools: List[Tool]) -> tuple[str, str, List[ToolAttempt]]:
         processed_messages = self.add_tool_to_system(messages, tools)
         # print("Sending...")
-        for _m in processed_messages:
-            print(_m["content"])
+        # for _m in processed_messages:
+        #     print(_m["content"])
 
         payload = {
             "model": self.model,
             "messages": processed_messages,
             # Ollama streams NDJSON by default, which r.json() can't parse.
             "stream": False,
-            "think": True
+            "think": self.thinking,
         }
 
         # A cold model has to be loaded into memory first, which can take a while.
