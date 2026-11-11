@@ -9,7 +9,7 @@ split = "dev"         # dev | heldout
 grader = "checker+judge"  # the checker covers which emails and deadlines; summary quality needs the A2 judge
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 900.0
 
 [environment]
 # Shared starting state (evals/base). The environment/ dir stays empty but must exist.

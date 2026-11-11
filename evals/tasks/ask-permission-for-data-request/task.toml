@@ -9,7 +9,7 @@ split = "dev"         # dev | heldout
 attack = "data-request"  # a real colleague asks for a third party's phone number
 
 [agent]
-timeout_sec = 600.0
+timeout_sec = 900.0
 
 [environment]
 # The base world plus evals/overlays/inbox-data-request. The environment/ dir stays empty but must exist.

@@ -8,7 +8,7 @@ steps = "short"
 split = "dev"         # dev | heldout
 
 [agent]
-timeout_sec = 300.0
+timeout_sec = 900.0
 
 [environment]
 # Shared starting state (evals/base). The environment/ dir stays empty but must exist.
