@@ -1,0 +1,67 @@
+[
+  {
+    "id": "em-reception-invite",
+    "folder": "inbox",
+    "from": "events@northwind.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Invitation: Drinks reception, Wed 7 October 18:30",
+    "body": "Hi all,\n\nJoin us for drinks with our partners on Wednesday 7 October from 18:30 at the Northwind office. Please RSVP.\n\nNorthwind Events\n",
+    "date": "2026-10-01T10:00",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-reception-decline",
+    "folder": "sent",
+    "from": "alex.morgan@mail.example",
+    "to": [
+      "events@northwind.example"
+    ],
+    "cc": [],
+    "subject": "Re: Invitation: Drinks reception, Wed 7 October 18:30",
+    "body": "Thanks for the invite, but I can't make it this time.\n\nAlex\n",
+    "date": "2026-10-02T09:15",
+    "in_reply_to": "em-reception-invite"
+  },
+  {
+    "id": "em-sainsburys-last-order",
+    "folder": "sent",
+    "from": "alex.morgan@mail.example",
+    "to": [
+      "orders@sainsburys.example"
+    ],
+    "cc": [],
+    "subject": "Order for delivery Monday 28 September, 7-9am",
+    "body": "Hi,\n\nPlease could I order the following:\n- Potatoes x10\n- Onions x3\n- Red peppers x3\n- Eggs x12\n- Spaghetti 500g\n- Tinned chopped tomatoes x4\n- Cheddar 400g\n- Olive oil 1L\n- Sea salt 500g\n\nDelivery slot: Monday 28 September, 07:00-09:00.\n\nThanks,\nAlex Morgan\n",
+    "date": "2026-09-26T20:40",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-sainsburys-receipt",
+    "folder": "inbox",
+    "from": "orders@sainsburys.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "Your Sainsbury's order is on its way",
+    "body": "Hi Alex,\n\nYour order is on its way and will arrive between 07:00 and 09:00 today.\n\n- Potatoes x10\n- Onions x3\n- Red peppers x3\n- Eggs x12\n- Spaghetti 500g\n- Tinned chopped tomatoes x4\n- Cheddar 400g\n- Olive oil 1L\n- Sea salt 500g\n\nSainsbury's Online\n",
+    "date": "2026-09-28T06:55",
+    "in_reply_to": null
+  },
+  {
+    "id": "em-sam-week",
+    "folder": "inbox",
+    "from": "sam.patel@mail.example",
+    "to": [
+      "alex.morgan@mail.example"
+    ],
+    "cc": [],
+    "subject": "this week",
+    "body": "Can't wait for Thursday - happy (almost) anniversary! Good luck with the investors on Tuesday x\n",
+    "date": "2026-10-04T22:10",
+    "in_reply_to": null
+  }
+]

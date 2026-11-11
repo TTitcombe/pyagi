@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""
+Mock email service. Sending only files the email in `sent`; nothing is delivered and nobody replies.
+Reading never changes state: `unread` is fixed by the seed, not cleared by `mail read`, so only real actions show up in a diff.
+
+  mail search [--query TEXT] [--folder F] [--from TEXT] [--unread] [--limit N]   newest first; all folders except trash by default
+  mail read ID
+  mail send  --to EMAIL [--to ...] --subject S --body B [--cc EMAIL ...] [--reply-to ID]
+  mail draft --to EMAIL [--to ...] --subject S --body B [--cc EMAIL ...] [--reply-to ID]
+  mail move ID --folder inbox|archive|trash
+"""
+import argparse
+
+from world import fail, fmt, load, matches_words, next_id, now, output, save
+
+FOLDERS = ("inbox", "sent", "drafts", "archive", "trash")
+
+
+def find(emails: list[dict], email_id: str) -> dict:
+    for email in emails:
+        if email["id"] == email_id:
+            return email
+    fail(f"No email with id '{email_id}'. Use `mail search` to find email ids.")
+
+
+def summary(e: dict) -> dict:
+    return {k: e[k] for k in ("id", "folder", "from", "to", "subject", "date")} | {"unread": e.get("unread", False), "snippet": e["body"][:100]}
+
+
+def compose(emails: list[dict], args, folder: str) -> dict:
+    bad = [a for a in args.to + (args.cc or []) if "@" not in a]
+    if bad:
+        fail(f"Invalid email address(es): {bad}. Use `contacts search` to look up addresses.")
+    if args.reply_to:
+        find(emails, args.reply_to)
+    email = {
+        "id": next_id(emails, "em"),
+        "folder": folder,
+        "from": load("world")["user"]["email"],
+        "to": args.to,
+        "cc": args.cc or [],
+        "subject": args.subject,
+        "body": args.body,
+        "date": fmt(now()),
+        "in_reply_to": args.reply_to,
+    }
+    emails.append(email)
+    save("mail", emails)
+    return email
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="mail", description="Mock email")
+    sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("search")
+    p.add_argument("--query", default="")
+    p.add_argument("--folder", choices=FOLDERS)
+    p.add_argument("--from", dest="sender")
+    p.add_argument("--unread", action="store_true", help="only unread emails")
+    p.add_argument("--limit", type=int, default=10)
+    sub.add_parser("read").add_argument("id")
+    for name in ("send", "draft"):
+        p = sub.add_parser(name)
+        p.add_argument("--to", action="append", required=True, help="repeat for several recipients")
+        p.add_argument("--cc", action="append")
+        p.add_argument("--subject", required=True)
+        p.add_argument("--body", required=True)
+        p.add_argument("--reply-to", help="id of the email being replied to")
+    p = sub.add_parser("move")
+    p.add_argument("id")
+    p.add_argument("--folder", choices=("inbox", "archive", "trash"), required=True)
+    args = parser.parse_args()
+
+    emails = load("mail")
+
+    if args.command == "search":
+        hits = [
+            e for e in emails
+            if (e["folder"] == args.folder if args.folder else e["folder"] != "trash")
+            and (args.sender is None or args.sender.lower() in e["from"].lower())
+            and (not args.unread or e.get("unread", False))
+            and matches_words(args.query, e["from"], e["to"], e["cc"], e["subject"], e["body"])
+        ]
+        hits.sort(key=lambda e: e["date"], reverse=True)
+        output([summary(e) for e in hits[: args.limit]])
+
+    elif args.command == "read":
+        output(find(emails, args.id))
+
+    elif args.command == "send":
+        output({"status": "sent", "email": compose(emails, args, "sent")})
+
+    elif args.command == "draft":
+        output({"status": "draft saved (not sent)", "email": compose(emails, args, "drafts")})
+
+    elif args.command == "move":
+        email = find(emails, args.id)
+        email["folder"] = args.folder
+        save("mail", emails)
+        output({"status": "moved", "id": args.id, "folder": args.folder})
+
+
+if __name__ == "__main__":
+    main()

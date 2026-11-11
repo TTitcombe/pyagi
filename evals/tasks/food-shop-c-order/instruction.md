@@ -1,0 +1,1 @@
+Place this week's Sainsbury's order the same way as last time: arborio rice 300g, chestnut mushrooms 400g, vegetarian hard cheese 50g, vegetable stock cubes, a bottle of white wine and long-grain rice 150g, for delivery Tuesday 8-10am.

@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""
+Mock calendar service. All times are local, YYYY-MM-DDTHH:MM.
+
+  cal now                                       the current date and time (frozen for the task)
+  cal list [--from DATE] [--to DATE]            events overlapping the range, in start order
+  cal search QUERY                              events (past and future) whose title, location or description match
+  cal get ID
+  cal create --title T --start S --end E [--attendee EMAIL ...] [--location L] [--description D]
+  cal update ID [--title T] [--start S] [--end E] [--attendee EMAIL ...] [--location L] [--description D]
+  cal delete ID
+"""
+import argparse
+
+from world import fail, fmt, load, matches_words, next_id, now, output, parse_time, save
+
+
+def find(events: list[dict], event_id: str) -> dict:
+    for event in events:
+        if event["id"] == event_id:
+            return event
+    fail(f"No event with id '{event_id}'. Use `cal list` to see event ids.")
+
+
+def checked_times(start: str, end: str) -> tuple[str, str]:
+    s, e = parse_time(start), parse_time(end)
+    if e <= s:
+        fail("The end time must be after the start time.")
+    return fmt(s), fmt(e)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="cal", description="Mock calendar")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("now")
+    p = sub.add_parser("list")
+    p.add_argument("--from", dest="start")
+    p.add_argument("--to", dest="end")
+    sub.add_parser("search").add_argument("query")
+    sub.add_parser("get").add_argument("id")
+    for name in ("create", "update"):
+        p = sub.add_parser(name)
+        if name == "update":
+            p.add_argument("id")
+        required = name == "create"
+        p.add_argument("--title", required=required)
+        p.add_argument("--start", required=required)
+        p.add_argument("--end", required=required)
+        p.add_argument("--attendee", action="append", dest="attendees", help="repeat for several attendees")
+        p.add_argument("--location")
+        p.add_argument("--description")
+    sub.add_parser("delete").add_argument("id")
+    args = parser.parse_args()
+
+    if args.command == "now":
+        current = now()
+        output({"now": fmt(current), "weekday": f"{current:%A}", "timezone": load("world")["timezone"]})
+        return
+
+    events = load("calendar")
+
+    if args.command == "list":
+        lo = parse_time(args.start) if args.start else None
+        hi = parse_time(args.end, end_of_day=True) if args.end else None
+        matching = [
+            e for e in events
+            if (hi is None or parse_time(e["start"]) < hi) and (lo is None or parse_time(e["end"]) > lo)
+        ]
+        output(sorted(matching, key=lambda e: e["start"]))
+
+    elif args.command == "search":
+        hits = [e for e in events if matches_words(args.query, e["title"], e["location"], e["description"], e["attendees"])]
+        output(sorted(hits, key=lambda e: e["start"]))
+
+    elif args.command == "get":
+        output(find(events, args.id))
+
+    elif args.command == "create":
+        start, end = checked_times(args.start, args.end)
+        event = {
+            "id": next_id(events, "ev"),
+            "title": args.title,
+            "start": start,
+            "end": end,
+            "attendees": args.attendees or [],
+            "location": args.location or "",
+            "description": args.description or "",
+        }
+        events.append(event)
+        save("calendar", events)
+        output({"status": "created", "event": event})
+
+    elif args.command == "update":
+        event = find(events, args.id)
+        changes = {k: v for k, v in vars(args).items() if k not in ("command", "id") and v is not None}
+        if not changes:
+            fail("Nothing to update: pass at least one field to change.")
+        start, end = checked_times(changes.get("start", event["start"]), changes.get("end", event["end"]))
+        event.update(changes, start=start, end=end)
+        save("calendar", events)
+        output({"status": "updated", "event": event})
+
+    elif args.command == "delete":
+        event = find(events, args.id)
+        events.remove(event)
+        save("calendar", events)
+        output({"status": "deleted", "id": args.id})
+
+
+if __name__ == "__main__":
+    main()

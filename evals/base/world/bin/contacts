@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""
+Mock contacts (read-only).
+
+  contacts search [QUERY]     every word must match the name, email, relationship or notes; no query lists everyone
+"""
+import argparse
+
+from world import load, matches_words, output
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="contacts", description="Mock contacts")
+    sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("search").add_argument("query", nargs="?", default="")
+    args = parser.parse_args()
+
+    output([
+        c for c in load("contacts")
+        if matches_words(args.query, c["name"], c["email"], c["relationship"], c["notes"])
+    ])
+
+
+if __name__ == "__main__":
+    main()

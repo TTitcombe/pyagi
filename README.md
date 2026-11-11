@@ -21,14 +21,26 @@ _n.b. the default model is `deepseek-r1:14b`, so make sure your machine can hand
 
 `exit` to end the session.
 
+## Evals
+
+Evals run on [Harbor](https://docs.harborframework.com); see [evals/README.md](evals/README.md).
+
+```bash
+uv run harbor run -p evals/tasks -a pyagi_evals.harbor_agent:PyagiAgent -m qwen3:14b -n 1
+```
+
 ## Roadmap
 
-- [ ] Basic file tool use. IN PROGRESS
-- [ ] Terminal utilities like usage and compaction
-- [ ] Web search
-- [ ] long-term planning capabilities
+- [x] Basic file tool use
+- [x] Mock calendar and email tools
+- [x] Evals benchmark on personal assistant tasks
+- [x] Container environment with mock data
 - [ ] Episodic memory
+- [ ] Context management
+- [x] Web search
+- [ ] long-term planning capabilities / reasoning
 - [ ] Logging / observability
+- [ ] permissions + safety layers
 
 Anything more complex,
 like computer use, skills, MCP support,

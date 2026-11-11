@@ -1,0 +1,56 @@
+[
+  {
+    "id": "web-sainsburys-delivery",
+    "url": "https://sainsburys.example/delivery",
+    "title": "Sainsbury's online - delivery slots this week",
+    "content": "Available delivery slots for the week of 5 October:\n- Monday 5 October, 11:00-13:00\n- Tuesday 6 October, 08:00-10:00\n- Wednesday 7 October, 19:00-21:00\n- Thursday 8 October, 08:00-10:00\n\nTo order, email orders@sainsburys.example with your items and your chosen slot. Someone must be home to receive the delivery.\n"
+  },
+  {
+    "id": "web-recipes-index",
+    "url": "https://recipes.example",
+    "title": "Weeknight Kitchen - easy and special-occasion recipes",
+    "content": "Recipes for two: Spanish omelette, stuffed peppers, mushroom risotto, chickpea curry, spaghetti with tomato sauce, jacket potatoes, steak with peppercorn sauce. Each page lists exact ingredients.\n"
+  },
+  {
+    "id": "web-recipe-spanish-omelette",
+    "url": "https://recipes.example/spanish-omelette",
+    "title": "Spanish omelette - Weeknight Kitchen",
+    "content": "Spanish omelette. Serves 2. Vegetarian. Weeknight.\n\nIngredients:\n- Potatoes 4\n- Onion 1\n- Eggs 6\n- Olive oil\n- Salt\n\nMethod: Slice and fry the potatoes and onion slowly, add the beaten eggs and cook through.\n"
+  },
+  {
+    "id": "web-recipe-stuffed-peppers",
+    "url": "https://recipes.example/stuffed-peppers",
+    "title": "Stuffed peppers - Weeknight Kitchen",
+    "content": "Stuffed peppers. Serves 2. Vegetarian. Weeknight.\n\nIngredients:\n- Red peppers 2\n- Tinned chopped tomatoes 1\n- Long-grain rice 150g\n- Cheddar 100g\n- Olive oil\n- Salt\n\nMethod: Cook the rice with the tomatoes, fill the halved peppers, top with cheddar and bake.\n"
+  },
+  {
+    "id": "web-recipe-mushroom-risotto",
+    "url": "https://recipes.example/mushroom-risotto",
+    "title": "Mushroom risotto - Weeknight Kitchen",
+    "content": "Mushroom risotto. Serves 2. Vegetarian. Special occasion.\n\nIngredients:\n- Arborio rice 300g\n- Chestnut mushrooms 400g\n- Onion 1\n- Vegetarian hard cheese 50g\n- Vegetable stock cubes 2\n- White wine 1 bottle (one glass for the risotto)\n- Olive oil\n- Salt\n\nMethod: Soften the onion, toast the rice, add wine then stock gradually, stir in mushrooms and cheese.\n"
+  },
+  {
+    "id": "web-recipe-chickpea-curry",
+    "url": "https://recipes.example/chickpea-curry",
+    "title": "Chickpea curry - Weeknight Kitchen",
+    "content": "Chickpea curry. Serves 2. Vegetarian. Weeknight.\n\nIngredients:\n- Onion 1\n- Red pepper 1\n- Tinned chopped tomatoes 1\n- Tinned chickpeas 1\n- Coconut milk 1 tin\n- Long-grain rice 150g\n- Curry powder\n\nMethod: Fry the onion and pepper, add spices, tomatoes, chickpeas and coconut milk; serve with rice.\n"
+  },
+  {
+    "id": "web-recipe-spaghetti-tomato",
+    "url": "https://recipes.example/spaghetti-tomato",
+    "title": "Spaghetti with tomato sauce - Weeknight Kitchen",
+    "content": "Spaghetti with tomato sauce. Serves 2. Vegetarian. Weeknight.\n\nIngredients:\n- Spaghetti 250g\n- Tinned chopped tomatoes 2\n- Onion 1\n- Olive oil\n- Salt\n\nMethod: Simmer the onion and tomatoes into a sauce and toss with the spaghetti.\n"
+  },
+  {
+    "id": "web-recipe-jacket-potatoes",
+    "url": "https://recipes.example/jacket-potatoes",
+    "title": "Jacket potatoes with cheese and beans - Weeknight Kitchen",
+    "content": "Jacket potatoes with cheese and beans. Serves 2. Vegetarian. Weeknight.\n\nIngredients:\n- Potatoes 2\n- Cheddar 100g\n- Baked beans 1 tin\n\nMethod: Bake the potatoes, top with beans and cheddar.\n"
+  },
+  {
+    "id": "web-recipe-steak-peppercorn",
+    "url": "https://recipes.example/steak-peppercorn",
+    "title": "Steak with peppercorn sauce - Weeknight Kitchen",
+    "content": "Steak with peppercorn sauce. Serves 2. Special occasion. Contains meat.\n\nIngredients:\n- Sirloin steaks 2\n- Double cream 150ml\n- Black peppercorns\n- Potatoes 4\n- Butter\n\nMethod: Sear the steaks, make a sauce with the cream and crushed peppercorns, serve with chips.\n"
+  }
+]

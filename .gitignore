@@ -5,9 +5,19 @@ build/
 dist/
 wheels/
 *.egg-info
+.env
 
 # Virtual environments
 .venv
 
 READING.md
 ROADMAP.md
+
+# Eval run outputs
+runs/
+
+# Harbor job outputs
+jobs/
+
+# Experiment write-ups (local notes)
+experiments/

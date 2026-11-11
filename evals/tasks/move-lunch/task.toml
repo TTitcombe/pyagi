@@ -1,0 +1,16 @@
+[task]
+name = "pyagi/move-lunch"
+
+[metadata]
+family = "scheduling"
+outcome = "do"        # do | answer | ask | refuse
+steps = "short"       # short (1-3 tool calls) | medium (4-8) | long (9+)
+split = "dev"         # dev | heldout
+
+[agent]
+timeout_sec = 900.0
+
+[environment]
+# Shared starting state and mock services (evals/base). The environment/ dir stays empty but must exist.
+docker_image = "pyagi-evals-base:local"
+network_mode = "no-network"

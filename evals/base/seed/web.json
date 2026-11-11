@@ -1,0 +1,62 @@
+[
+  {
+    "id": "web-guide-date-night",
+    "url": "https://londoneats.example/date-night",
+    "title": "London Eats: 8 date-night restaurants for autumn",
+    "content": "Our pick of places for a special evening:\n- Verdant (Fitzrovia): seasonal vegetarian tasting menu, candlelit. https://verdant.example\n- Osteria Lupa (Islington): neighbourhood Italian, handmade pasta, lots for vegetarians. https://osterialupa.example\n- The Greenhouse Kitchen (Camden): relaxed plant-based small plates. https://greenhousekitchen.example\n- Smokehouse 54 (Shoreditch): Texas-style BBQ for serious meat lovers. https://smokehouse54.example\n- Dishoom (King's Cross): Bombay cafe classics, always buzzing. https://dishoom-kx.example\n- Padella (Borough): famous fresh pasta, expect a queue. https://padella-borough.example\n- Little Owl Bistro (Islington): cosy French bistro. https://littleowlbistro.example\n- Blue Note Cellar (Soho): live jazz and cocktails. https://bluenotecellar.example\n"
+  },
+  {
+    "id": "web-verdant",
+    "url": "https://verdant.example",
+    "title": "Verdant - vegetarian tasting menu, Fitzrovia",
+    "content": "Verdant serves a seven-course seasonal vegetarian tasting menu (vegan on request). \u00a375 per person.\nOpening hours: Wednesday to Sunday, 18:00-22:30 (last seating 21:00). Closed Monday and Tuesday.\nReservations: email bookings@verdant.example with the date, time and number of guests. We reply within 24 hours.\n"
+  },
+  {
+    "id": "web-osteria-lupa",
+    "url": "https://osterialupa.example",
+    "title": "Osteria Lupa - Italian, Islington",
+    "content": "Handmade pasta and wood-fired dishes, with plenty of vegetarian options on every menu. Mains \u00a316-24.\nOpening hours: Tuesday to Saturday, 17:30-22:30. Closed Sunday and Monday.\nBookings: email table@osterialupa.example with your date, time and party size.\n"
+  },
+  {
+    "id": "web-greenhouse",
+    "url": "https://greenhousekitchen.example",
+    "title": "The Greenhouse Kitchen - plant-based small plates, Camden",
+    "content": "Relaxed all-vegetarian small plates and natural wine.\nOpening hours: Monday to Saturday, 12:00-22:00.\nBookings: bookings@greenhousekitchen.example\n"
+  },
+  {
+    "id": "web-smokehouse",
+    "url": "https://smokehouse54.example",
+    "title": "Smokehouse 54 - Texas BBQ, Shoreditch",
+    "content": "Brisket, ribs and burnt ends smoked for 14 hours. Very limited vegetarian options (one side salad).\nOpening hours: every day, 17:00-23:00.\nBookings: hello@smokehouse54.example\n"
+  },
+  {
+    "id": "web-dishoom",
+    "url": "https://dishoom-kx.example",
+    "title": "Dishoom King's Cross",
+    "content": "Bombay cafe classics in a former railway goods yard. Good vegetarian choice.\nOpening hours: every day, 08:00-23:00. Bookings for groups of 6 or more only; smaller groups walk in.\n"
+  },
+  {
+    "id": "web-padella",
+    "url": "https://padella-borough.example",
+    "title": "Padella - fresh pasta, Borough Market",
+    "content": "Hand-rolled pasta made fresh every morning. Vegetarian dishes available.\nOpening hours: every day, 12:00-22:00. We don't take bookings: walk-ins only.\n"
+  },
+  {
+    "id": "web-little-owl",
+    "url": "https://littleowlbistro.example",
+    "title": "Little Owl Bistro - permanently closed",
+    "content": "After twelve wonderful years, Little Owl Bistro has closed its doors for good. Thank you for everything.\n"
+  },
+  {
+    "id": "web-blue-note",
+    "url": "https://bluenotecellar.example",
+    "title": "Blue Note Cellar - live jazz, Soho",
+    "content": "Live jazz every Thursday, Friday and Saturday from 20:00. Cocktails and bar snacks only, no dinner menu.\nTickets \u00a325: email boxoffice@bluenotecellar.example with the date and number of tickets.\n"
+  },
+  {
+    "id": "web-weather",
+    "url": "https://weather.example/london",
+    "title": "London weather this week",
+    "content": "Mild and dry most of the week, with rain likely on Sunday evening.\n"
+  }
+]
